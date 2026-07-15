@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Expo / React Native
+.expo/
+apps/mobile/dist/
+apps/mobile/web-build/
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/expo-env.d.ts
+.kotlin/
+.metro-health-check*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Vite / build outputs
+dist/
+build/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Python / FastAPI
+backend/.venv/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json
+apps/mobile/.claude/settings.local.json
+
+# TypeScript
+*.tsbuildinfo

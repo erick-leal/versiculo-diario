@@ -1,0 +1,12 @@
+{
+  "name": "versiculo-diario",
+  "private": true,
+  "packageManager": "pnpm@11.13.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "mobile": "pnpm --filter mobile start",
+    "admin": "pnpm --filter admin dev"
+  }
+}
