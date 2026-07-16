@@ -81,7 +81,9 @@ class AppSettings(Base):
 
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), primary_key=True)
     dark_mode: Mapped[str] = mapped_column(Text, default="system")
-    notification_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Opt-in, no opt-out: recien se activa cuando el usuario lo pide
+    # explicitamente desde Configuracion (ahi se pide permiso del SO).
+    notification_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
     notification_time: Mapped[time] = mapped_column(Time, default=time(8, 0))
 
 

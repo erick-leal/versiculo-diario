@@ -1,4 +1,5 @@
-from datetime import date, datetime
+from datetime import date, datetime, time
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -38,3 +39,17 @@ class FavoriteOut(BaseModel):
 
 class FavoriteCreate(BaseModel):
     daily_verse_id: int
+
+
+class AppSettingsOut(BaseModel):
+    dark_mode: Literal["light", "dark", "system"]
+    notification_enabled: bool
+    notification_time: time
+
+    model_config = {"from_attributes": True}
+
+
+class AppSettingsUpdate(BaseModel):
+    dark_mode: Literal["light", "dark", "system"] | None = None
+    notification_enabled: bool | None = None
+    notification_time: time | None = None
