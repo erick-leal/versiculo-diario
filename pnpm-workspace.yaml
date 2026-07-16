@@ -36,3 +36,9 @@ minimumReleaseAgeExclude:
   - expo-server@57.0.1
   - expo-status-bar@57.0.1
   - expo@57.0.6
+  - '@expo/metro-runtime@57.0.5'
+  - '@expo/ui@57.0.6'
+  - expo-glass-effect@57.0.1
+  - expo-linking@57.0.3
+  - expo-router@57.0.6
+  - expo-symbols@57.0.1
