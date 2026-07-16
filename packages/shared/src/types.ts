@@ -11,7 +11,14 @@ export interface ReflectionOut {
 }
 
 export interface DailyVerseOut {
+  id: number;
   date: string;
   verse: VerseOut;
   reflection: ReflectionOut;
+}
+
+export interface FavoriteOut {
+  id: number;
+  created_at: string;
+  daily_verse: DailyVerseOut;
 }

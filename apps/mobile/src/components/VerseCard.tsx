@@ -3,6 +3,7 @@ import type { DailyVerseOut } from "@versiculo-diario/shared";
 
 import { useTheme } from "../theme";
 import { AppText } from "./AppText";
+import { FavoriteButton } from "./FavoriteButton";
 
 interface VerseCardProps {
   dailyVerse: DailyVerseOut;
@@ -13,7 +14,12 @@ export function VerseCard({ dailyVerse }: VerseCardProps) {
 
   return (
     <View>
-      <AppText variant="label">{dailyVerse.verse.reference}</AppText>
+      <View style={styles.header}>
+        <AppText variant="label" style={styles.reference}>
+          {dailyVerse.verse.reference}
+        </AppText>
+        <FavoriteButton dailyVerseId={dailyVerse.id} />
+      </View>
       <AppText variant="verse" style={{ marginTop: theme.spacing.sm }}>
         {dailyVerse.verse.text}
       </AppText>
@@ -36,6 +42,14 @@ export function VerseCard({ dailyVerse }: VerseCardProps) {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  reference: {
+    flex: 1,
+  },
   divider: {
     height: 1,
   },
