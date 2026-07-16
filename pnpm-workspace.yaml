@@ -1,6 +1,9 @@
 packages:
   - "apps/*"
   - "packages/*"
+allowBuilds:
+  '@firebase/util': true
+  protobufjs: true
 minimumReleaseAgeExclude:
   - '@expo/cli@54.0.26 || 57.0.8'
   - '@expo/config-plugins@54.0.5 || 57.0.5'
