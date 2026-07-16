@@ -60,7 +60,15 @@ body {
   color: var(--text-secondary);
 }
 
-.login-card input {
+.login-error {
+  margin: 0;
+  color: var(--error);
+  font-size: 14px;
+}
+
+input,
+textarea,
+select {
   font: inherit;
   padding: 10px 12px;
   border: 1px solid var(--border);
@@ -69,24 +77,178 @@ body {
   color: var(--text);
 }
 
-.login-card button {
+button {
   font: inherit;
   font-weight: 600;
-  padding: 12px;
-  border: none;
+  padding: 10px 16px;
+  border: 1px solid transparent;
   border-radius: 8px;
   background: var(--accent);
   color: #fff;
   cursor: pointer;
 }
 
-.login-card button:disabled {
+button:disabled {
   opacity: 0.6;
   cursor: default;
 }
 
-.login-error {
-  margin: 0;
+/* Admin shell */
+
+.admin-shell {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.admin-brand {
+  font-weight: 700;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.admin-nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.admin-nav-link.active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.admin-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-user-email {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.admin-signout {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+.admin-main {
+  flex: 1;
+  padding: 32px;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Verses page */
+
+.verse-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  margin-bottom: 32px;
+}
+
+.verse-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.verse-form-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.verse-form-row > label {
+  flex: 2;
+  min-width: 140px;
+}
+
+.verse-form-narrow {
+  flex: 1 !important;
+  min-width: 100px !important;
+}
+
+.verse-form-error {
   color: var(--error);
   font-size: 14px;
+  margin: 0;
+}
+
+.verse-form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.verse-form-cancel {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+.verse-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.verse-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.verse-translation {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.verse-text {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+}
+
+.verse-item-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.verse-item-actions button {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+  padding: 6px 12px;
+  font-size: 13px;
 }
