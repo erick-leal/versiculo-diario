@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import (
     admin,
     admin_daily_verses,
+    admin_quote_images,
     admin_reflections,
     admin_verses,
     daily_verse,
@@ -32,6 +33,7 @@ app.include_router(admin.router)
 app.include_router(admin_verses.router)
 app.include_router(admin_reflections.router)
 app.include_router(admin_daily_verses.router)
+app.include_router(admin_quote_images.router)
 
 
 @app.get("/health")

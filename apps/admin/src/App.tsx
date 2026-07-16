@@ -7,6 +7,7 @@ import { Login } from "./pages/Login";
 import { Verses } from "./pages/Verses";
 import { Reflections } from "./pages/Reflections";
 import { Schedule } from "./pages/Schedule";
+import { Media } from "./pages/Media";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="verses" element={<Verses />} />
             <Route path="reflections" element={<Reflections />} />
             <Route path="schedule" element={<Schedule />} />
+            <Route path="media" element={<Media />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

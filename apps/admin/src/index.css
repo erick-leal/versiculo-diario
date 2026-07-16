@@ -252,3 +252,47 @@ button:disabled {
   padding: 6px 12px;
   font-size: 13px;
 }
+
+/* Media page */
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.media-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.media-thumb {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  display: block;
+}
+
+.media-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.media-active-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.media-card-actions button {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border);
+  padding: 6px 12px;
+  font-size: 13px;
+}

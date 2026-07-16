@@ -95,3 +95,20 @@ class DailyVerseUpdate(BaseModel):
     date: date_type | None = None
     verse_id: int | None = None
     reflection_id: int | None = None
+
+
+class AdminQuoteImageOut(BaseModel):
+    id: int
+    image_url: str
+    is_active: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class QuoteImageCreate(BaseModel):
+    image_url: str
+
+
+class QuoteImageUpdate(BaseModel):
+    is_active: bool | None = None
