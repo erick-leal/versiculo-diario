@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -20,6 +20,21 @@ class ReflectionOut(BaseModel):
 
 
 class DailyVerseOut(BaseModel):
+    id: int
     date: date
     verse: VerseOut
     reflection: ReflectionOut
+
+    model_config = {"from_attributes": True}
+
+
+class FavoriteOut(BaseModel):
+    id: int
+    created_at: datetime
+    daily_verse: DailyVerseOut
+
+    model_config = {"from_attributes": True}
+
+
+class FavoriteCreate(BaseModel):
+    daily_verse_id: int
