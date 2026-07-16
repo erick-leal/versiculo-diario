@@ -39,6 +39,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <Feather name="clock" color={color} size={size} />,
         }}
       />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Ajustes",
+          tabBarIcon: ({ color, size }) => <Feather name="settings" color={color} size={size} />,
+        }}
+      />
     </Tabs>
   );
 }

@@ -39,4 +39,7 @@ export const apiGet = <T>(path: string, withDeviceId = false) =>
 export const apiPost = <T>(path: string, body: unknown) =>
   request<T>(path, { method: "POST", body, withDeviceId: true });
 
+export const apiPut = <T>(path: string, body: unknown) =>
+  request<T>(path, { method: "PUT", body, withDeviceId: true });
+
 export const apiDelete = (path: string) => request<void>(path, { method: "DELETE", withDeviceId: true });
