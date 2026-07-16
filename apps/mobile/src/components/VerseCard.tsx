@@ -1,9 +1,12 @@
-import { StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import type { DailyVerseOut } from "@versiculo-diario/shared";
 
 import { useTheme } from "../theme";
 import { AppText } from "./AppText";
 import { FavoriteButton } from "./FavoriteButton";
+import { ShareSheet } from "./ShareSheet";
 
 interface VerseCardProps {
   dailyVerse: DailyVerseOut;
@@ -11,6 +14,7 @@ interface VerseCardProps {
 
 export function VerseCard({ dailyVerse }: VerseCardProps) {
   const theme = useTheme();
+  const [shareVisible, setShareVisible] = useState(false);
 
   return (
     <View>
@@ -18,6 +22,15 @@ export function VerseCard({ dailyVerse }: VerseCardProps) {
         <AppText variant="label" style={styles.reference}>
           {dailyVerse.verse.reference}
         </AppText>
+        <Pressable
+          onPress={() => setShareVisible(true)}
+          hitSlop={8}
+          style={styles.iconButton}
+          accessibilityRole="button"
+          accessibilityLabel="Compartir versículo"
+        >
+          <Feather name="share" size={20} color={theme.colors.accent} />
+        </Pressable>
         <FavoriteButton dailyVerseId={dailyVerse.id} />
       </View>
       <AppText variant="verse" style={{ marginTop: theme.spacing.sm }}>
@@ -37,6 +50,12 @@ export function VerseCard({ dailyVerse }: VerseCardProps) {
         </AppText>
       )}
       <AppText variant="body">{dailyVerse.reflection.body}</AppText>
+
+      <ShareSheet
+        dailyVerse={dailyVerse}
+        visible={shareVisible}
+        onClose={() => setShareVisible(false)}
+      />
     </View>
   );
 }
@@ -49,6 +68,12 @@ const styles = StyleSheet.create({
   },
   reference: {
     flex: 1,
+  },
+  iconButton: {
+    minWidth: 44,
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
   },
   divider: {
     height: 1,
