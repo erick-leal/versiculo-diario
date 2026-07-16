@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=BACKEND_DIR / ".env", extra="ignore")
 
     database_url: str
+    firebase_service_account_base64: str
 
     @field_validator("database_url")
     @classmethod
