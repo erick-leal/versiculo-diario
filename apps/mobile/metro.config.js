@@ -20,11 +20,24 @@ config.resolver.unstable_enableSymlinks = true;
 // El monorepo tiene otra app (admin) con su propia version de React (para
 // web). Con hierarchical lookup activo, Metro a veces resolvia "react" hacia
 // esa copia hoisteada en vez de la de mobile, causando "Invalid hook call"
-// (dos copias de React coexistiendo). Fijamos explicitamente cuales archivos
-// usar para estos paquetes, sin importar el resto de la resolucion.
-config.resolver.extraNodeModules = {
+// (dos copias de React coexistiendo). extraNodeModules NO alcanza para
+// arreglar esto: Metro solo lo consulta si la resolucion normal falla, y
+// aca "exito" con la copia equivocada. Hay que interceptar la resolucion
+// para estos paquetes de forma incondicional.
+const forcedRoots = {
   react: path.resolve(projectRoot, "node_modules/react"),
   "react-native": path.resolve(projectRoot, "node_modules/react-native"),
+};
+
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  for (const [pkg, root] of Object.entries(forcedRoots)) {
+    if (moduleName === pkg || moduleName.startsWith(`${pkg}/`)) {
+      const subpath = moduleName.slice(pkg.length); // "" o "/algo"
+      const absolutePath = subpath ? path.join(root, subpath) : root;
+      return context.resolveRequest(context, absolutePath, platform);
+    }
+  }
+  return context.resolveRequest(context, moduleName, platform);
 };
 
 module.exports = config;
