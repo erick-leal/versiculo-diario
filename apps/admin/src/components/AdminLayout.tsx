@@ -13,6 +13,9 @@ export function AdminLayout() {
           <NavLink to="/verses" className="admin-nav-link">
             Versículos
           </NavLink>
+          <NavLink to="/reflections" className="admin-nav-link">
+            Reflexiones
+          </NavLink>
         </nav>
         <div className="admin-topbar-right">
           <span className="admin-user-email">{user?.email}</span>

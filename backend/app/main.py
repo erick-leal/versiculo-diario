@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import admin, admin_verses, daily_verse, favorites, history, settings
+from app.routers import (
+    admin,
+    admin_reflections,
+    admin_verses,
+    daily_verse,
+    favorites,
+    history,
+    settings,
+)
 
 app = FastAPI(title="Versiculo Diario API")
 
@@ -21,6 +29,7 @@ app.include_router(history.router)
 app.include_router(settings.router)
 app.include_router(admin.router)
 app.include_router(admin_verses.router)
+app.include_router(admin_reflections.router)
 
 
 @app.get("/health")
