@@ -6,6 +6,7 @@ import { AdminLayout } from "./components/AdminLayout";
 import { Login } from "./pages/Login";
 import { Verses } from "./pages/Verses";
 import { Reflections } from "./pages/Reflections";
+import { Schedule } from "./pages/Schedule";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route index element={<Navigate to="/verses" replace />} />
             <Route path="verses" element={<Verses />} />
             <Route path="reflections" element={<Reflections />} />
+            <Route path="schedule" element={<Schedule />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -1,3 +1,4 @@
+from datetime import date as date_type
 from datetime import datetime
 from typing import Literal
 
@@ -71,3 +72,26 @@ class ReflectionUpdate(BaseModel):
     status: ReflectionStatus | None = None
     source: ReflectionSource | None = None
     author_name: str | None = None
+
+
+class AdminDailyVerseOut(BaseModel):
+    id: int
+    date: date_type
+    verse_id: int
+    reflection_id: int
+    verse: AdminVerseOut
+    reflection: AdminReflectionOut
+
+    model_config = {"from_attributes": True}
+
+
+class DailyVerseCreate(BaseModel):
+    date: date_type
+    verse_id: int
+    reflection_id: int
+
+
+class DailyVerseUpdate(BaseModel):
+    date: date_type | None = None
+    verse_id: int | None = None
+    reflection_id: int | None = None

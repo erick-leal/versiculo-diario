@@ -16,6 +16,9 @@ export function AdminLayout() {
           <NavLink to="/reflections" className="admin-nav-link">
             Reflexiones
           </NavLink>
+          <NavLink to="/schedule" className="admin-nav-link">
+            Calendario
+          </NavLink>
         </nav>
         <div className="admin-topbar-right">
           <span className="admin-user-email">{user?.email}</span>
