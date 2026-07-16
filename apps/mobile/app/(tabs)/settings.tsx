@@ -11,6 +11,7 @@ import {
 import { AppText } from "../../src/components/AppText";
 import { Screen } from "../../src/components/Screen";
 import { LoadingState, ErrorState } from "../../src/components/StateMessage";
+import { ThemeModeSelector } from "../../src/components/ThemeModeSelector";
 import { useTheme } from "../../src/theme";
 
 function timeStringToDate(time: string): Date {
@@ -76,7 +77,15 @@ export default function SettingsScreen() {
 
         {data && (
           <>
-            <View style={styles.row}>
+            <AppText variant="label" style={{ marginBottom: theme.spacing.sm }}>
+              Apariencia
+            </AppText>
+            <ThemeModeSelector
+              value={data.dark_mode}
+              onChange={(dark_mode) => updateSettings.mutate({ dark_mode })}
+            />
+
+            <View style={[styles.row, { marginTop: theme.spacing.xxl }]}>
               <AppText variant="title">Recordatorio diario</AppText>
               <Switch
                 value={data.notification_enabled}
