@@ -26,6 +26,13 @@ function dateToTimeString(date: Date): string {
   return `${hh}:${mm}:00`;
 }
 
+function formatTime(time: string): string {
+  return timeStringToDate(time).toLocaleTimeString("es", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export default function SettingsScreen() {
   const theme = useTheme();
   const { data, isPending, isError, error } = useSettings();
@@ -90,9 +97,10 @@ export default function SettingsScreen() {
 
             {data.notification_enabled && (
               <View style={{ marginTop: theme.spacing.lg }}>
-                <AppText variant="label" style={{ marginBottom: theme.spacing.sm }}>
-                  Hora
-                </AppText>
+                <View style={[styles.row, { marginBottom: theme.spacing.sm }]}>
+                  <AppText variant="label">Hora guardada</AppText>
+                  <AppText variant="title">{formatTime(data.notification_time)}</AppText>
+                </View>
                 <DateTimePicker
                   value={timeStringToDate(data.notification_time)}
                   mode="time"
