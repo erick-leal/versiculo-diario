@@ -99,9 +99,14 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
    `node:sqlite` internamente, requiere Node ≥22.13. La imagen default de
    EAS Android trae Node 20.19.4 → falla con `ERR_UNKNOWN_BUILTIN_MODULE`.
    Fix: `"node": "22.13.0"` en cada perfil de `apps/mobile/eas.json`.
-6. **`/daily-verse` usa "hoy" en UTC explícito** (`datetime.now(timezone.utc
-   ).date()`, no `date.today()`) — evita que el endpoint pierda contenido al
-   cruzar medianoche UTC.
+6. **"Hoy" para `/daily-verse` y `/history` se calcula en `America/Bogota`
+   fijo**, no en UTC — ver `backend/app/core/dates.py` (`today()`). Antes
+   usaba `datetime.now(timezone.utc).date()`, lo cual causó un 404 real en
+   producción: a las 21:50 hora Colombia el servidor ya marcaba "mañana" en
+   UTC, dejando sin publicar el contenido que Erick sí había revisado para
+   "hoy". Decisión explícita de Erick (audiencia esperada en Latam) sobre
+   usar zona fija en vez de UTC o timezone por dispositivo — no revertir a
+   UTC sin volver a plantear esa decisión.
 7. **Google Play Protect bloquea el APK de `eas build --profile preview`
    al instalarlo** — normal, no es un problema del build. Cualquier APK
    fuera de la Play Store sin "reputación" (paquete nunca visto antes en
