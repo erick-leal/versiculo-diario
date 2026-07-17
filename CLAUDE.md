@@ -154,8 +154,14 @@ revisar que no rompa el favorito.
   `ericklealescobar`), `apps/mobile/eas.json` con perfiles `preview` y
   `production`.
 - ✅ Build preview (APK) exitoso — build
-  `24ad2bfe-8451-4f2e-8a90-baaee18dd0a6` en
-  expo.dev/accounts/ericklealescobar/projects/versiculo-diario/builds/24ad2bfe-8451-4f2e-8a90-baaee18dd0a6.
+  `0290df30-bcd6-4115-acf4-0a0a0f4dd219` en
+  expo.dev/accounts/ericklealescobar/projects/versiculo-diario/builds/0290df30-bcd6-4115-acf4-0a0a0f4dd219.
+  (El primer intento, `24ad2bfe...`, compiló bien pero crasheaba al abrir:
+  `EXPO_PUBLIC_API_URL` no estaba disponible en el build de EAS porque solo
+  vivía en el `.env` local, que no se sube al servidor de build. Fix:
+  bloque `"env"` con esa variable agregado a cada perfil de
+  `apps/mobile/eas.json` — es pública, queda inline en el bundle igual, no
+  hay problema de seguridad en tenerla ahí.)
   Si un build futuro falla, diagnosticar vía `eas build:view <id> --json` →
   URL firmada de GCS en `logFiles` → `curl` → puede venir comprimido en
   brotli (paquete `brotli` de Python ya instalado en `backend/.venv` si hace
