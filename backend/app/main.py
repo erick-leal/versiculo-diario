@@ -17,11 +17,13 @@ from app.routers import (
 app = FastAPI(title="Versiculo Diario API")
 
 # El panel admin corre en el navegador (a diferencia de la app movil, que no
-# aplica CORS). Restringido a origenes conocidos, no wildcard - se agrega el
-# dominio real cuando el admin este desplegado (Fase 11).
+# aplica CORS). Restringido a origenes conocidos, no wildcard.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://passionate-determination-production.up.railway.app",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
