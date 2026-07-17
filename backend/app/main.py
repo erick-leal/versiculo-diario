@@ -10,6 +10,7 @@ from app.routers import (
     daily_verse,
     favorites,
     history,
+    privacy,
     settings,
 )
 
@@ -34,6 +35,7 @@ app.include_router(admin_verses.router)
 app.include_router(admin_reflections.router)
 app.include_router(admin_daily_verses.router)
 app.include_router(admin_quote_images.router)
+app.include_router(privacy.router)
 
 
 @app.get("/health")
