@@ -27,7 +27,7 @@ def _validate_pair(db: Session, verse_id: int, reflection_id: int) -> None:
 
 @router.get("", response_model=list[AdminDailyVerseOut])
 def list_daily_verses(db: Session = Depends(get_db)) -> list[DailyVerse]:
-    return db.query(DailyVerse).order_by(DailyVerse.date.desc()).limit(200).all()
+    return db.query(DailyVerse).order_by(DailyVerse.date.asc()).limit(200).all()
 
 
 @router.post("", response_model=AdminDailyVerseOut, status_code=201)
