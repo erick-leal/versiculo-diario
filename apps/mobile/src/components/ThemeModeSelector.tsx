@@ -1,25 +1,26 @@
-import { Pressable, StyleSheet, View } from "react-native";
-import type { DarkModePreference } from "@versiculo-diario/shared";
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { useTheme } from "../theme";
 import { AppText } from "./AppText";
 
-const OPTIONS: { value: DarkModePreference; label: string }[] = [
+type LightOrDark = "light" | "dark";
+
+const OPTIONS: { value: LightOrDark; label: string }[] = [
   { value: "light", label: "Claro" },
   { value: "dark", label: "Oscuro" },
-  { value: "system", label: "Sistema" },
 ];
 
 interface ThemeModeSelectorProps {
-  value: DarkModePreference;
-  onChange: (value: DarkModePreference) => void;
+  value: LightOrDark;
+  onChange: (value: LightOrDark) => void;
+  style?: StyleProp<ViewStyle>;
 }
 
-export function ThemeModeSelector({ value, onChange }: ThemeModeSelectorProps) {
+export function ThemeModeSelector({ value, onChange, style }: ThemeModeSelectorProps) {
   const theme = useTheme();
 
   return (
-    <View style={[styles.row, { borderColor: theme.colors.border }]}>
+    <View style={[styles.row, { borderColor: theme.colors.border }, style]}>
       {OPTIONS.map((option) => {
         const active = option.value === value;
         return (

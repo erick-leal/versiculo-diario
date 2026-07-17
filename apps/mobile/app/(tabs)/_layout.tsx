@@ -44,6 +44,7 @@ export default function TabsLayout() {
         options={{
           title: "Ajustes",
           tabBarIcon: ({ color, size }) => <Feather name="settings" color={color} size={size} />,
+          href: null,
         }}
       />
     </Tabs>
