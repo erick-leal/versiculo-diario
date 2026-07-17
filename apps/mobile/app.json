@@ -42,6 +42,13 @@
           }
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "62447578-190d-4d82-8f85-320ab2125463"
+      }
+    },
+    "owner": "ericklealescobar"
   }
 }
