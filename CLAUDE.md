@@ -37,8 +37,9 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
   (Email/Password, un solo usuario: eleal.escobar@gmail.com).
 - **Backend** (`backend/`): FastAPI + SQLAlchemy 2.0 + Alembic + PostgreSQL.
 - **Compartido** (`packages/shared`): tipos TS compartidos entre mobile/admin.
-- **Infra:** Railway (backend + Postgres), Firebase (solo Auth del admin,
-  Storage NO se usa — exige plan pago Blaze).
+- **Infra:** Railway (backend + Postgres + admin, 3 servicios en el proyecto
+  `diligent-reflection`), Firebase (solo Auth del admin, Storage NO se usa —
+  exige plan pago Blaze).
 
 ## Decisiones de producto clave (con el porqué)
 
@@ -68,6 +69,17 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
   Railway `diligent-reflection`, servicios `versiculo-diario` + `Postgres`.
   Deploy automático por `git push` (Root Directory = `backend` en el
   dashboard). Ver gotchas de deploy abajo antes de desplegar manualmente.
+- Admin: `https://passionate-determination-production.up.railway.app`,
+  mismo proyecto Railway, servicio propio. Root Directory = raíz del repo
+  (NO `apps/admin` — depende de `packages/shared` vía pnpm workspace, se
+  rompe si Railway no ve el resto del monorepo). Build/Start override en
+  el dashboard: `pnpm install --frozen-lockfile && pnpm --filter admin
+  build` / `pnpm --filter admin exec serve -s dist -l $PORT`. Variable
+  `NIXPACKS_NODE_VERSION=22.13.0` puesta a propósito — mismo motivo que el
+  gotcha de EAS Build (pnpm 11 necesita Node ≥22.13, si no truena con
+  `node:sqlite`). El backend tiene el dominio del admin en
+  `CORSMiddleware.allow_origins` (`backend/app/main.py`) — si se regenera
+  el dominio de Railway, hay que actualizar esa lista y redesplegar.
 - Firebase (`versiculo-diario-1e43b`) solo Auth del admin. Verificación de
   tokens **liviana** (PyJWT + certs públicos de Google,
   `backend/app/firebase_verify.py`) — **NO usar el SDK `firebase-admin`**,
