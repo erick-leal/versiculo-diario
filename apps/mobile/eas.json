@@ -7,12 +7,18 @@
     "preview": {
       "distribution": "internal",
       "node": "22.13.0",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://versiculo-diario-production.up.railway.app"
+      },
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
       "node": "22.13.0",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://versiculo-diario-production.up.railway.app"
+      },
       "android": {
         "buildType": "app-bundle"
       },
