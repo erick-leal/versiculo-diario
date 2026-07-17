@@ -168,12 +168,16 @@ historial + identidad anónima) · 6 (notificación local + Ajustes) · 7
 (30 días de contenido sembrado, `scripts/seed_content.py`, 2026-07-15 a
 2026-08-13).
 
-**⚠️ Pendiente recurrente de Fase 10:** las 29 reflexiones sembradas están en
-`status="ai_generated"`, NO publicadas. Erick debe revisarlas y publicarlas
-una por una en el admin (`/reflections`) antes de que llegue cada fecha, o
-`/daily-verse` devuelve 404 ese día. Juan 3:16 (2026-07-16) ya está publicado
-y tiene un favorito real de prueba apuntándole — no tocar esa fila sin
-revisar que no rompa el favorito.
+**⚠️ Pendiente recurrente de Fase 10:** la mayoría de las reflexiones
+sembradas siguen en `status="ai_generated"`, NO publicadas. Erick debe
+revisarlas y publicarlas una por una en el admin (`/reflections`,
+cambiando el dropdown Estado a "Publicado") **antes de que llegue cada
+fecha**, o `/daily-verse` devuelve 404 ese día — esto ya pasó dos veces
+(16 y 17 de julio) y va a seguir pasando cada día hasta que se publiquen
+con margen. Recomendado: publicar varios días por delante de una sola vez,
+no día a día. Juan 3:16 (2026-07-16) y Filipenses 4:13 (2026-07-17) ya
+están publicados; Juan 3:16 además tiene un favorito real de prueba
+apuntándole — no tocar esa fila sin revisar que no rompa el favorito.
 
 **En curso — Fase 11** (identidad de app + publicación):
 - ✅ Nombre "Versículo Diario", ícono real, `bundleIdentifier`/`package`
@@ -202,10 +206,10 @@ revisar que no rompa el favorito.
   historial, compartir imagen, modo oscuro) — quedó pendiente por una
   ronda de bugs de UX en Ajustes (ver abajo).
 - ✅ **Panel admin desplegado en Railway** como servicio propio
-  (`passionate-determination`, ver Infraestructura arriba). CORS y Node
-  ya resueltos. **Pendiente: Erick todavía no confirmó que el login de
-  Firebase funcione en la URL de producción** — es el primer chequeo a
-  hacer en cuanto se retome esto.
+  (`passionate-determination`, ver Infraestructura arriba). CORS, Node y
+  login de Firebase en producción, todo confirmado funcionando. El
+  Calendario (`/daily-verses`, `Schedule.tsx`) ahora ordena ascendente
+  (fechas cercanas primero) — antes mostraba agosto antes que julio.
 - ⚠️ **Bug pendiente de UX en mobile — pantalla de Ajustes (`app/(tabs)/settings.tsx`)**:
   el picker de hora de "Recordatorio diario"
   (`@react-native-community/datetimepicker`, `display="spinner"`) se monta
