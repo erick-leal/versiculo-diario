@@ -70,16 +70,17 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
   Deploy automático por `git push` (Root Directory = `backend` en el
   dashboard). Ver gotchas de deploy abajo antes de desplegar manualmente.
 - Admin: `https://passionate-determination-production.up.railway.app`,
-  mismo proyecto Railway, servicio propio. Root Directory = raíz del repo
-  (NO `apps/admin` — depende de `packages/shared` vía pnpm workspace, se
-  rompe si Railway no ve el resto del monorepo). Build/Start override en
-  el dashboard: `pnpm install --frozen-lockfile && pnpm --filter admin
-  build` / `pnpm --filter admin exec serve -s dist -l $PORT`. Variable
-  `NIXPACKS_NODE_VERSION=22.13.0` puesta a propósito — mismo motivo que el
-  gotcha de EAS Build (pnpm 11 necesita Node ≥22.13, si no truena con
-  `node:sqlite`). El backend tiene el dominio del admin en
-  `CORSMiddleware.allow_origins` (`backend/app/main.py`) — si se regenera
-  el dominio de Railway, hay que actualizar esa lista y redesplegar.
+  mismo proyecto Railway, servicio propio (nombre interno del servicio:
+  `passionate-determination`). Root Directory = raíz del repo (NO
+  `apps/admin` — depende de `packages/shared` vía pnpm workspace, se rompe
+  si Railway no ve el resto del monorepo). Build/Start override en el
+  dashboard: `pnpm install --frozen-lockfile && pnpm --filter admin build`
+  / `pnpm --filter admin exec serve -s dist -l $PORT`. Node se fija via
+  `engines.node` en el `package.json` raíz + `.nvmrc` (ver gotcha de deploy
+  #5 abajo — `NIXPACKS_NODE_VERSION` NO funcionó). El backend tiene el
+  dominio del admin en `CORSMiddleware.allow_origins`
+  (`backend/app/main.py`) — si se regenera el dominio de Railway, hay que
+  actualizar esa lista y redesplegar.
 - Firebase (`versiculo-diario-1e43b`) solo Auth del admin. Verificación de
   tokens **liviana** (PyJWT + certs públicos de Google,
   `backend/app/firebase_verify.py`) — **NO usar el SDK `firebase-admin`**,
@@ -146,6 +147,17 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
    EXITOSO, no el más reciente** — para ver el estado real:
    `railway deployment list --service versiculo-diario` o
    `railway logs --latest`.
+5. **`NIXPACKS_NODE_VERSION` no tuvo efecto en el servicio de admin** — el
+   build seguía fallando con Node 20.20.2 (`ERR_UNKNOWN_BUILTIN_MODULE:
+   node:sqlite`, el mismo error que el gotcha #5 de EAS Build) a pesar de
+   tener esa variable seteada a `22.13.0`. Los logs mencionan "Metal
+   builder", sugiriendo que Railway está usando su builder nuevo
+   (Railpack), no Nixpacks clásico, que puede no leer esa variable (o
+   esperar solo la versión mayor, no el semver completo). Fix real: fijar
+   Node vía señales estándar que ambos builders reconocen —
+   `engines.node` en el `package.json` raíz (`>=22.13.0`) + `.nvmrc` en la
+   raíz (`22.13.0`). Si un futuro build de Railway vuelve a fallar por
+   versión de Node, no confiar en `NIXPACKS_NODE_VERSION` solo.
 
 ## Estado del roadmap (13 fases)
 
@@ -183,14 +195,37 @@ revisar que no rompa el favorito.
   URL firmada de GCS en `logFiles` → `curl` → puede venir comprimido en
   brotli (paquete `brotli` de Python ya instalado en `backend/.venv` si hace
   falta descomprimir manualmente).
-- 🔄 Pendiente: Erick instalando el APK en su Android físico y probándolo
-  como build nativo real (primera vez fuera de Expo Go) — golden path
-  (versículo del día, favorito, historial, compartir imagen, modo oscuro,
-  notificación) y reportar si algo se ve distinto a Expo Go.
-- Pendiente después: build de producción (`--profile production`, AAB) y
-  envío a Google Play Console (ficha de tienda, screenshots, cuestionario de
-  clasificación de contenido, formulario de seguridad de datos — ya
-  informado por la política de privacidad escrita).
+- 🔄 Erick instaló el APK preview en un Android físico (tablet, tuvo que
+  saltarse el bloqueo de Play Protect — ver gotcha #7) y ya carga bien
+  (después de los fixes de `EXPO_PUBLIC_API_URL` y de zona horaria de
+  arriba). Falta terminar de probar el golden path completo (favorito,
+  historial, compartir imagen, modo oscuro) — quedó pendiente por una
+  ronda de bugs de UX en Ajustes (ver abajo).
+- ✅ **Panel admin desplegado en Railway** como servicio propio
+  (`passionate-determination`, ver Infraestructura arriba). CORS y Node
+  ya resueltos. **Pendiente: Erick todavía no confirmó que el login de
+  Firebase funcione en la URL de producción** — es el primer chequeo a
+  hacer en cuanto se retome esto.
+- ⚠️ **Bug pendiente de UX en mobile — pantalla de Ajustes (`app/(tabs)/settings.tsx`)**:
+  el picker de hora de "Recordatorio diario"
+  (`@react-native-community/datetimepicker`, `display="spinner"`) se monta
+  siempre que el switch de notificaciones está en `true` en vez de abrirse
+  bajo demanda — en Android esto se renderiza como un diálogo nativo que
+  no cierra. Y el selector de apariencia (Claro/Oscuro/Sistema como 3
+  botones iguales) tenía mal UX. **Decisión temporal:** se sacó el tab
+  completo de "Ajustes" de la barra de navegación (`href: null` en
+  `app/(tabs)/_layout.tsx`) — el archivo `settings.tsx` quedó con un
+  intento de rediseño (switch "Usar la del sistema" + selector
+  Claro/Oscuro) que Erick probó y **tampoco le gustó el resultado visual**.
+  `src/lib/notifications.ts` (la lógica de programar/cancelar la
+  notificación) está intacta y sin usar. **Pendiente real: rediseñar
+  Ajustes desde cero** (recordatorio con picker imperativo en Android +
+  apariencia con mejor UX) antes de volver a mostrar el tab.
+- Pendiente después de cerrar lo anterior: build de producción
+  (`--profile production`, AAB) y envío a Google Play Console (ficha de
+  tienda, screenshots, cuestionario de clasificación de contenido,
+  formulario de seguridad de datos — ya informado por la política de
+  privacidad escrita).
 
 **No iniciado:** publicación en App Store (iOS) — explícitamente pospuesta,
 también requiere EAS Build porque Windows no puede compilar iOS localmente.
