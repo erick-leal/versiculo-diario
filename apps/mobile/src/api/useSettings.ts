@@ -16,6 +16,19 @@ export function useUpdateSettings() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: AppSettingsUpdate) => apiPut<AppSettingsOut>("/settings", payload),
+    onMutate: async (payload) => {
+      await queryClient.cancelQueries({ queryKey: SETTINGS_KEY });
+      const previous = queryClient.getQueryData<AppSettingsOut>(SETTINGS_KEY);
+      if (previous) {
+        queryClient.setQueryData(SETTINGS_KEY, { ...previous, ...payload });
+      }
+      return { previous };
+    },
+    onError: (_err, _payload, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(SETTINGS_KEY, context.previous);
+      }
+    },
     onSuccess: (data) => {
       queryClient.setQueryData(SETTINGS_KEY, data);
     },

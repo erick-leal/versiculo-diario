@@ -10,6 +10,7 @@ from app.routers import (
     daily_verse,
     favorites,
     history,
+    personal_reflections,
     privacy,
     settings,
 )
@@ -32,6 +33,7 @@ app.include_router(daily_verse.router)
 app.include_router(favorites.router)
 app.include_router(history.router)
 app.include_router(settings.router)
+app.include_router(personal_reflections.router)
 app.include_router(admin.router)
 app.include_router(admin_verses.router)
 app.include_router(admin_reflections.router)

@@ -1,13 +1,15 @@
 import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import type { DarkModePreference } from "@versiculo-diario/shared";
 
 import { useTheme } from "../theme";
 import { AppText } from "./AppText";
 
-type LightOrDark = "light" | "dark";
+type LightOrDark = Exclude<DarkModePreference, "system">;
 
-const OPTIONS: { value: LightOrDark; label: string }[] = [
-  { value: "light", label: "Claro" },
-  { value: "dark", label: "Oscuro" },
+const OPTIONS: { value: LightOrDark; label: string; icon: keyof typeof Feather.glyphMap }[] = [
+  { value: "light", label: "Claro", icon: "sun" },
+  { value: "dark", label: "Oscuro", icon: "moon" },
 ];
 
 interface ThemeModeSelectorProps {
@@ -23,21 +25,17 @@ export function ThemeModeSelector({ value, onChange, style }: ThemeModeSelectorP
     <View style={[styles.row, { borderColor: theme.colors.border }, style]}>
       {OPTIONS.map((option) => {
         const active = option.value === value;
+        const color = active ? "#FFFFFF" : theme.colors.textSecondary;
         return (
           <Pressable
             key={option.value}
             onPress={() => onChange(option.value)}
-            style={[
-              styles.option,
-              active && { backgroundColor: theme.colors.accent },
-            ]}
+            style={[styles.option, active && { backgroundColor: theme.colors.accent }]}
             accessibilityRole="button"
             accessibilityState={{ selected: active }}
           >
-            <AppText
-              variant="body"
-              style={{ color: active ? "#FFFFFF" : theme.colors.textSecondary }}
-            >
+            <Feather name={option.icon} size={16} color={color} />
+            <AppText variant="caption" style={{ color }}>
               {option.label}
             </AppText>
           </Pressable>
@@ -57,9 +55,10 @@ const styles = StyleSheet.create({
   },
   option: {
     flex: 1,
-    minHeight: 44,
+    minHeight: 56,
     borderRadius: 9,
     alignItems: "center",
     justifyContent: "center",
+    gap: 4,
   },
 });

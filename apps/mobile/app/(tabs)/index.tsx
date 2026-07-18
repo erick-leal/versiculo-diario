@@ -13,6 +13,7 @@ export default function HomeScreen() {
   return (
     <Screen>
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           flexGrow: 1,
           justifyContent: "center",

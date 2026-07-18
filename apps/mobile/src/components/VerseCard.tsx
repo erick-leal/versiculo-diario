@@ -6,6 +6,7 @@ import type { DailyVerseOut } from "@versiculo-diario/shared";
 import { useTheme } from "../theme";
 import { AppText } from "./AppText";
 import { FavoriteButton } from "./FavoriteButton";
+import { MyReflectionEditor } from "./MyReflectionEditor";
 import { ShareSheet } from "./ShareSheet";
 
 interface VerseCardProps {
@@ -31,7 +32,7 @@ export function VerseCard({ dailyVerse }: VerseCardProps) {
         >
           <Feather name="share" size={20} color={theme.colors.accent} />
         </Pressable>
-        <FavoriteButton dailyVerseId={dailyVerse.id} />
+        <FavoriteButton dailyVerse={dailyVerse} />
       </View>
       <AppText variant="verse" style={{ marginTop: theme.spacing.sm }}>
         {dailyVerse.verse.text}
@@ -50,6 +51,8 @@ export function VerseCard({ dailyVerse }: VerseCardProps) {
         </AppText>
       )}
       <AppText variant="body">{dailyVerse.reflection.body}</AppText>
+
+      <MyReflectionEditor dailyVerse={dailyVerse} />
 
       <ShareSheet
         dailyVerse={dailyVerse}

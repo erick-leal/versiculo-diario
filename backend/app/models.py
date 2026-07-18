@@ -76,6 +76,20 @@ class Favorite(Base):
     daily_verse: Mapped["DailyVerse"] = relationship()
 
 
+class PersonalReflection(Base):
+    __tablename__ = "personal_reflections"
+    __table_args__ = (UniqueConstraint("user_id", "daily_verse_id"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
+    daily_verse_id: Mapped[int] = mapped_column(ForeignKey("daily_verses.id"))
+    body: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
+
+    daily_verse: Mapped["DailyVerse"] = relationship()
+
+
 class AppSettings(Base):
     __tablename__ = "app_settings"
 

@@ -20,3 +20,16 @@ def get_daily_verse(db: Session = Depends(get_db)) -> DailyVerse:
     if daily_verse is None:
         raise HTTPException(status_code=404, detail="No hay versículo programado para hoy")
     return daily_verse
+
+
+@router.get("/daily-verse/{daily_verse_id}", response_model=DailyVerseOut)
+def get_daily_verse_by_id(daily_verse_id: int, db: Session = Depends(get_db)) -> DailyVerse:
+    daily_verse = (
+        db.query(DailyVerse)
+        .join(Reflection, DailyVerse.reflection_id == Reflection.id)
+        .filter(DailyVerse.id == daily_verse_id, Reflection.status == "published")
+        .first()
+    )
+    if daily_verse is None:
+        raise HTTPException(status_code=404, detail="Versículo no encontrado")
+    return daily_verse

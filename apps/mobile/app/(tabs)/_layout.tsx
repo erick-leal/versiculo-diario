@@ -12,6 +12,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.textSecondary,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: theme.colors.background,
           borderTopColor: theme.colors.border,
@@ -40,11 +41,17 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="journal"
+        options={{
+          title: "Diario",
+          tabBarIcon: ({ color, size }) => <Feather name="book-open" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Ajustes",
           tabBarIcon: ({ color, size }) => <Feather name="settings" color={color} size={size} />,
-          href: null,
         }}
       />
     </Tabs>

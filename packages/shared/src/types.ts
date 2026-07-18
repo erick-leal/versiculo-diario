@@ -23,6 +23,20 @@ export interface FavoriteOut {
   daily_verse: DailyVerseOut;
 }
 
+export interface PersonalReflectionOut {
+  id: number;
+  daily_verse_id: number;
+  body: string;
+  created_at: string;
+  updated_at: string;
+  daily_verse: DailyVerseOut;
+}
+
+export interface PersonalReflectionUpsert {
+  daily_verse_id: number;
+  body: string;
+}
+
 export type DarkModePreference = "light" | "dark" | "system";
 
 export interface AppSettingsOut {

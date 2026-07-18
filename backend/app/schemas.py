@@ -41,6 +41,22 @@ class FavoriteCreate(BaseModel):
     daily_verse_id: int
 
 
+class PersonalReflectionOut(BaseModel):
+    id: int
+    daily_verse_id: int
+    body: str
+    created_at: datetime
+    updated_at: datetime
+    daily_verse: DailyVerseOut
+
+    model_config = {"from_attributes": True}
+
+
+class PersonalReflectionUpsert(BaseModel):
+    daily_verse_id: int
+    body: str
+
+
 class AppSettingsOut(BaseModel):
     dark_mode: Literal["light", "dark", "system"]
     notification_enabled: bool

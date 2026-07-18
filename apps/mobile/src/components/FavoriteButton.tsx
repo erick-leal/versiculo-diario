@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import type { DailyVerseOut } from "@versiculo-diario/shared";
 
 import { useFavoriteStatus } from "../api/useFavoriteStatus";
 import { useTheme } from "../theme";
@@ -7,9 +8,9 @@ import { useTheme } from "../theme";
 // Ionicons en vez de Feather (el set base del sistema de diseno) solo aca:
 // es el unico de los dos que trae par relleno/contorno ("heart"/"heart-outline"),
 // necesario para que el estado de favorito se lea de un vistazo.
-export function FavoriteButton({ dailyVerseId }: { dailyVerseId: number }) {
+export function FavoriteButton({ dailyVerse }: { dailyVerse: DailyVerseOut }) {
   const theme = useTheme();
-  const { isFavorite, toggle, isPending } = useFavoriteStatus(dailyVerseId);
+  const { isFavorite, toggle, isPending } = useFavoriteStatus(dailyVerse);
 
   return (
     <Pressable

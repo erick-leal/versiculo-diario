@@ -32,7 +32,7 @@ export function VerseListItem({ dailyVerse }: { dailyVerse: DailyVerseOut }) {
           {dailyVerse.verse.text}
         </AppText>
       </View>
-      <FavoriteButton dailyVerseId={dailyVerse.id} />
+      <FavoriteButton dailyVerse={dailyVerse} />
     </View>
   );
 }

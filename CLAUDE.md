@@ -158,6 +158,14 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
    `engines.node` en el `package.json` raíz (`>=22.13.0`) + `.nvmrc` en la
    raíz (`22.13.0`). Si un futuro build de Railway vuelve a fallar por
    versión de Node, no confiar en `NIXPACKS_NODE_VERSION` solo.
+6. **El proxy de Postgres de Railway mata conexiones idle**, causando
+   `OperationalError` esporádicos en request locales/de baja frecuencia
+   contra la base remota (el backend local sí se conecta al Postgres de
+   Railway por internet, no hay Postgres local — por eso el dev local se
+   siente más lento que producción, donde backend y DB comparten la red
+   privada de Railway). Fix en `backend/app/database.py`:
+   `create_engine(..., pool_pre_ping=True, pool_recycle=300)` — recicla
+   conexiones proactivamente cada 5 min en vez de esperar a que fallen.
 
 ## Estado del roadmap (13 fases)
 
@@ -210,21 +218,54 @@ apuntándole — no tocar esa fila sin revisar que no rompa el favorito.
   login de Firebase en producción, todo confirmado funcionando. El
   Calendario (`/daily-verses`, `Schedule.tsx`) ahora ordena ascendente
   (fechas cercanas primero) — antes mostraba agosto antes que julio.
-- ⚠️ **Bug pendiente de UX en mobile — pantalla de Ajustes (`app/(tabs)/settings.tsx`)**:
-  el picker de hora de "Recordatorio diario"
-  (`@react-native-community/datetimepicker`, `display="spinner"`) se monta
-  siempre que el switch de notificaciones está en `true` en vez de abrirse
-  bajo demanda — en Android esto se renderiza como un diálogo nativo que
-  no cierra. Y el selector de apariencia (Claro/Oscuro/Sistema como 3
-  botones iguales) tenía mal UX. **Decisión temporal:** se sacó el tab
-  completo de "Ajustes" de la barra de navegación (`href: null` en
-  `app/(tabs)/_layout.tsx`) — el archivo `settings.tsx` quedó con un
-  intento de rediseño (switch "Usar la del sistema" + selector
-  Claro/Oscuro) que Erick probó y **tampoco le gustó el resultado visual**.
-  `src/lib/notifications.ts` (la lógica de programar/cancelar la
-  notificación) está intacta y sin usar. **Pendiente real: rediseñar
-  Ajustes desde cero** (recordatorio con picker imperativo en Android +
-  apariencia con mejor UX) antes de volver a mostrar el tab.
+- ✅ **Resuelto el bug de UX de Ajustes** (`app/(tabs)/settings.tsx`, tab
+  restaurado en `app/(tabs)/_layout.tsx`, ya no tiene `href: null`). Fix
+  real del picker de hora: reemplazar el `<DateTimePicker>` declarativo
+  (montado mientras el switch de notificaciones está en `true`, quedaba
+  "pegado" como diálogo nativo en Android) por la API **imperativa**
+  `DateTimePickerAndroid.open(...)` — se abre bajo demanda al tocar la fila
+  "Hora" y se autogestiona (abre y cierra sola). El selector de apariencia
+  (`ThemeModeSelector.tsx`) se simplificó a solo Claro/Oscuro (sin
+  "Sistema" como botón — ese valor sigue existiendo en el backend como
+  default inicial, pero no es seleccionable desde la UI; si `dark_mode ===
+  "system"` se resalta el que coincida con `useColorScheme()` del SO hasta
+  que el usuario elija uno explícito).
+- ✅ **Nueva feature: Diario personal de reflexiones** — los usuarios
+  pueden escribir su propia reflexión corta sobre el versículo del día
+  (distinta de la reflexión editorial publicada). Backend:
+  `PersonalReflection` (`backend/app/models.py`,
+  alembic `4bda7d798cb4_diario_personal_de_reflexiones.py`) con
+  `status` implícito de "1 por usuario por día" (unique constraint
+  `user_id`+`daily_verse_id`), endpoints en
+  `backend/app/routers/personal_reflections.py`
+  (`GET/PUT /personal-reflections`, `DELETE /personal-reflections/{id}`).
+  Mobile: tab nuevo "Diario" (`app/(tabs)/journal.tsx`, lista de todas las
+  reflexiones propias), `MyReflectionEditor.tsx` embebido en `VerseCard`
+  (editar/guardar/eliminar la reflexión del día actual), pantalla
+  `app/day/[id].tsx` (ver un día específico del historial, reemplaza el
+  antiguo listado plano de `history.tsx` por `HistoryCalendar.tsx` —
+  calendario mensual navegable, días con contenido resaltados).
+  **Patrón de optimistic updates** (ya usado en `useSettings.ts`) extendido
+  a `usePersonalReflections.ts` y `useFavorites.ts`: `onMutate` aplica el
+  cambio al cache antes de la respuesta del server, `onError` hace
+  rollback con el snapshot previo, `onSuccess` reconcilia con la respuesta
+  real — sin esto, cada guardar/eliminar/favoritear se sentía con ~5s de
+  lag en dev local (ver gotcha de Postgres arriba) aunque en producción es
+  mucho más rápido por la red privada de Railway. **Importante:** si un
+  componente dispara `setState` de UI (ej. cerrar el modo edición) debe
+  hacerlo de inmediato confiando en el optimistic update, no esperar a
+  `onSuccess` — esperar reintroduce el lag visualmente aunque el dato ya
+  esté correcto en cache (bug real que se cometió y corrigió en
+  `MyReflectionEditor.tsx`).
+  **Patrón de teclado en formularios** (`Screen.tsx` envuelve `children` en
+  `KeyboardAvoidingView`, `_layout.tsx` tiene `tabBarHideOnKeyboard: true`,
+  los `ScrollView` relevantes tienen `keyboardShouldPersistTaps="handled"`,
+  y el `TextInput` de la reflexión tiene `maxHeight` para no crecer sin
+  límite) para que el teclado no tape inputs/botones en pantallas con
+  formularios — replicar este patrón si se agregan más formularios en
+  mobile. Nota: `expo.android.softwareKeyboardLayoutMode` en `app.json`
+  (ajuste nativo de Android) NO se puede probar en Expo Go (shell
+  pre-compilado) — solo tendría efecto en un dev client o build EAS.
 - Pendiente después de cerrar lo anterior: build de producción
   (`--profile production`, AAB) y envío a Google Play Console (ficha de
   tienda, screenshots, cuestionario de clasificación de contenido,

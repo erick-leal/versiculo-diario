@@ -51,3 +51,7 @@ apps/mobile/.claude/settings.local.json
 
 # TypeScript
 *.tsbuildinfo
+
+# Claude Code tooling artifacts
+.claude/.headroom_wrap_marker.json
+.tokensave/
