@@ -5,13 +5,12 @@ la asignacion manual de fecha por fecha en el calendario del admin.
 
 Idempotente: si un dia del rango ya tiene DailyVerse, se salta. Evita repetir
 una reflexion que ya se uso en los ultimos MOOD_REPEAT_COOLDOWN_DAYS dias.
+
+Se ejecuta como modulo (python -m scripts.auto_schedule_verse) con cwd=backend/,
+igual que el resto de comandos de este servicio (uvicorn, alembic).
 """
 
-import sys
 from datetime import timedelta
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 
 from sqlalchemy import func
 
