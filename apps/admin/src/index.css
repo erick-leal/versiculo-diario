@@ -193,6 +193,26 @@ button:disabled {
   min-width: 100px !important;
 }
 
+fieldset.verse-form-row {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+fieldset.verse-form-row legend {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 0 0 8px;
+}
+
+.verse-form-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 6px !important;
+  flex: 0 auto !important;
+  min-width: 0 !important;
+}
+
 .verse-form-error {
   color: var(--error);
   font-size: 14px;

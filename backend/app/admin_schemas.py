@@ -2,10 +2,19 @@ from datetime import date as date_type
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+
+from app.constants import MOOD_TAGS
 
 ReflectionStatus = Literal["draft", "ai_generated", "reviewed", "published"]
 ReflectionSource = Literal["human", "ai_assisted"]
+
+
+def _validate_mood_tags(value: list[str]) -> list[str]:
+    invalid = set(value) - set(MOOD_TAGS)
+    if invalid:
+        raise ValueError(f"mood_tags inválidos: {sorted(invalid)}")
+    return value
 
 
 class AdminVerseOut(BaseModel):
@@ -50,6 +59,7 @@ class AdminReflectionOut(BaseModel):
     source: ReflectionSource
     author_name: str | None
     reviewed_by: str | None
+    mood_tags: list[str]
     created_at: datetime
     updated_at: datetime
 
@@ -63,6 +73,12 @@ class ReflectionCreate(BaseModel):
     status: ReflectionStatus = "draft"
     source: ReflectionSource = "human"
     author_name: str | None = None
+    mood_tags: list[str] = []
+
+    @field_validator("mood_tags")
+    @classmethod
+    def _check_mood_tags(cls, value: list[str]) -> list[str]:
+        return _validate_mood_tags(value)
 
 
 class ReflectionUpdate(BaseModel):
@@ -72,6 +88,12 @@ class ReflectionUpdate(BaseModel):
     status: ReflectionStatus | None = None
     source: ReflectionSource | None = None
     author_name: str | None = None
+    mood_tags: list[str] | None = None
+
+    @field_validator("mood_tags")
+    @classmethod
+    def _check_mood_tags(cls, value: list[str] | None) -> list[str] | None:
+        return None if value is None else _validate_mood_tags(value)
 
 
 class AdminDailyVerseOut(BaseModel):

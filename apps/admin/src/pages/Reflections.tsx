@@ -5,7 +5,9 @@ import {
   deleteReflection,
   listReflections,
   updateReflection,
+  MOOD_TAGS,
   type AdminReflection,
+  type MoodTag,
   type ReflectionInput,
   type ReflectionSource,
   type ReflectionStatus,
@@ -24,6 +26,19 @@ const SOURCE_LABELS: Record<ReflectionSource, string> = {
   ai_assisted: "Asistido por IA",
 };
 
+const MOOD_TAG_LABELS: Record<MoodTag, string> = {
+  ansiedad: "Ansiedad",
+  tristeza: "Tristeza",
+  duelo: "Duelo",
+  gratitud: "Gratitud",
+  esperanza: "Esperanza",
+  duda: "Duda",
+  fortaleza: "Fortaleza",
+  paz: "Paz",
+  gozo: "Gozo",
+  agotamiento: "Agotamiento",
+};
+
 function emptyForm(defaultVerseId: number): ReflectionInput {
   return {
     verse_id: defaultVerseId,
@@ -32,6 +47,7 @@ function emptyForm(defaultVerseId: number): ReflectionInput {
     status: "draft",
     source: "human",
     author_name: "",
+    mood_tags: [],
   };
 }
 
@@ -69,7 +85,17 @@ export function Reflections() {
       status: reflection.status,
       source: reflection.source,
       author_name: reflection.author_name ?? "",
+      mood_tags: reflection.mood_tags,
     });
+  };
+
+  const toggleMoodTag = (tag: MoodTag) => {
+    setForm((f) => ({
+      ...f,
+      mood_tags: f.mood_tags.includes(tag)
+        ? f.mood_tags.filter((t) => t !== tag)
+        : [...f.mood_tags, tag],
+    }));
   };
 
   const cancelEdit = () => {
@@ -187,6 +213,20 @@ export function Reflections() {
           </label>
         </div>
 
+        <fieldset className="verse-form-row">
+          <legend>Estados de ánimo a los que aplica (opcional)</legend>
+          {MOOD_TAGS.map((tag) => (
+            <label key={tag} className="verse-form-checkbox">
+              <input
+                type="checkbox"
+                checked={form.mood_tags.includes(tag)}
+                onChange={() => toggleMoodTag(tag)}
+              />
+              {MOOD_TAG_LABELS[tag]}
+            </label>
+          ))}
+        </fieldset>
+
         {error && <p className="verse-form-error">{error}</p>}
 
         <div className="verse-form-actions">
@@ -216,6 +256,11 @@ export function Reflections() {
                 </span>
                 {reflection.title && <p className="verse-text"><strong>{reflection.title}</strong></p>}
                 <p className="verse-text">{reflection.body}</p>
+                {reflection.mood_tags.length > 0 && (
+                  <p className="verse-translation">
+                    {reflection.mood_tags.map((tag) => MOOD_TAG_LABELS[tag]).join(", ")}
+                  </p>
+                )}
               </div>
               <div className="verse-item-actions">
                 <button onClick={() => startEdit(reflection)}>Editar</button>

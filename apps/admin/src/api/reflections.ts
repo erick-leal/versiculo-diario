@@ -4,6 +4,21 @@ import type { AdminVerse } from "./verses";
 export type ReflectionStatus = "draft" | "ai_generated" | "reviewed" | "published";
 export type ReflectionSource = "human" | "ai_assisted";
 
+export const MOOD_TAGS = [
+  "ansiedad",
+  "tristeza",
+  "duelo",
+  "gratitud",
+  "esperanza",
+  "duda",
+  "fortaleza",
+  "paz",
+  "gozo",
+  "agotamiento",
+] as const;
+
+export type MoodTag = (typeof MOOD_TAGS)[number];
+
 export interface AdminReflection {
   id: number;
   verse_id: number;
@@ -14,6 +29,7 @@ export interface AdminReflection {
   source: ReflectionSource;
   author_name: string | null;
   reviewed_by: string | null;
+  mood_tags: MoodTag[];
   created_at: string;
   updated_at: string;
 }
@@ -25,6 +41,7 @@ export interface ReflectionInput {
   status: ReflectionStatus;
   source: ReflectionSource;
   author_name: string | null;
+  mood_tags: MoodTag[];
 }
 
 export const listReflections = () => apiGet<AdminReflection[]>("/admin/reflections");
