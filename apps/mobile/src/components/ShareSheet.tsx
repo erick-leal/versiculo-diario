@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
 import type { DailyVerseOut } from "@versiculo-diario/shared";
 
+import { usePersonalReflectionForDay } from "../api/usePersonalReflections";
 import { useTheme } from "../theme";
 import { AppText } from "./AppText";
 import { ShareCard, SHARE_BACKGROUNDS, type ShareBackgroundKey } from "./ShareCard";
@@ -17,7 +18,9 @@ interface ShareSheetProps {
 
 export function ShareSheet({ dailyVerse, visible, onClose }: ShareSheetProps) {
   const theme = useTheme();
+  const { entry } = usePersonalReflectionForDay(dailyVerse);
   const [background, setBackground] = useState<ShareBackgroundKey>("cream");
+  const [includeReflection, setIncludeReflection] = useState(false);
   const [sharing, setSharing] = useState(false);
   const cardRef = useRef<View>(null);
 
@@ -42,8 +45,55 @@ export function ShareSheet({ dailyVerse, visible, onClose }: ShareSheetProps) {
           </View>
 
           <View style={styles.preview}>
-            <ShareCard ref={cardRef} dailyVerse={dailyVerse} background={background} />
+            <ShareCard
+              ref={cardRef}
+              dailyVerse={dailyVerse}
+              background={background}
+              personalReflection={includeReflection ? entry?.body : undefined}
+            />
           </View>
+
+          {entry && (
+            <View style={styles.segmentRow}>
+              <Pressable
+                onPress={() => setIncludeReflection(false)}
+                style={[
+                  styles.segmentButton,
+                  {
+                    borderColor: theme.colors.border,
+                    backgroundColor: !includeReflection ? theme.colors.accent : "transparent",
+                  },
+                ]}
+                accessibilityRole="button"
+              >
+                <AppText
+                  variant="label"
+                  style={{ color: !includeReflection ? theme.colors.background : theme.colors.textPrimary }}
+                >
+                  Solo versículo
+                </AppText>
+              </Pressable>
+              <Pressable
+                onPress={() => setIncludeReflection(true)}
+                style={[
+                  styles.segmentButton,
+                  {
+                    borderColor: theme.colors.border,
+                    backgroundColor: includeReflection ? theme.colors.accent : "transparent",
+                    marginLeft: 10,
+                  },
+                ]}
+                accessibilityRole="button"
+              >
+                <AppText
+                  variant="label"
+                  style={{ color: includeReflection ? theme.colors.background : theme.colors.textPrimary }}
+                >
+                  + Mi reflexión
+                </AppText>
+              </Pressable>
+            </View>
+          )}
 
           <View style={styles.swatchRow}>
             {BACKGROUND_KEYS.map((key) => (
@@ -111,6 +161,19 @@ const styles = StyleSheet.create({
   },
   preview: {
     marginBottom: 20,
+  },
+  segmentRow: {
+    flexDirection: "row",
+    width: "100%",
+    marginBottom: 20,
+  },
+  segmentButton: {
+    flex: 1,
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderRadius: 8,
   },
   swatchRow: {
     flexDirection: "row",

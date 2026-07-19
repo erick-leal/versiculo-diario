@@ -21,29 +21,57 @@ const TEXT_COLOR: Record<ShareBackgroundKey, string> = {
 interface ShareCardProps {
   dailyVerse: DailyVerseOut;
   background: ShareBackgroundKey;
+  personalReflection?: string;
 }
 
-export const ShareCard = forwardRef<View, ShareCardProps>(({ dailyVerse, background }, ref) => {
-  const textColor = TEXT_COLOR[background];
+export const ShareCard = forwardRef<View, ShareCardProps>(
+  ({ dailyVerse, background, personalReflection }, ref) => {
+    const textColor = TEXT_COLOR[background];
 
-  return (
-    <View ref={ref} collapsable={false} style={styles.container}>
-      <ImageBackground source={SHARE_BACKGROUNDS[background]} style={styles.background}>
-        <View style={styles.content}>
-          <AppText variant="label" style={[styles.reference, { color: textColor }]}>
-            {dailyVerse.verse.reference}
+    return (
+      <View ref={ref} collapsable={false} style={styles.container}>
+        <ImageBackground source={SHARE_BACKGROUNDS[background]} style={styles.background}>
+          <View style={styles.content}>
+            <AppText variant="label" style={[styles.reference, { color: textColor }]}>
+              {dailyVerse.verse.reference}
+            </AppText>
+            <AppText
+              variant="verse"
+              style={[styles.verseText, { color: textColor }]}
+              numberOfLines={personalReflection ? 5 : 8}
+              adjustsFontSizeToFit
+              minimumFontScale={0.6}
+            >
+              {dailyVerse.verse.text}
+            </AppText>
+            {personalReflection && (
+              <View style={[styles.reflectionBlock, { borderColor: textColor }]}>
+                <AppText
+                  variant="caption"
+                  style={[styles.reflectionLabel, { color: textColor }]}
+                >
+                  Mi reflexión
+                </AppText>
+                <AppText
+                  variant="body"
+                  style={[styles.reflectionText, { color: textColor }]}
+                  numberOfLines={6}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.55}
+                >
+                  {personalReflection}
+                </AppText>
+              </View>
+            )}
+          </View>
+          <AppText variant="caption" style={[styles.wordmark, { color: textColor }]}>
+            Versículo Diario
           </AppText>
-          <AppText variant="verse" style={[styles.verseText, { color: textColor }]}>
-            {dailyVerse.verse.text}
-          </AppText>
-        </View>
-        <AppText variant="caption" style={[styles.wordmark, { color: textColor }]}>
-          Versículo Diario
-        </AppText>
-      </ImageBackground>
-    </View>
-  );
-});
+        </ImageBackground>
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -68,6 +96,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 22,
     lineHeight: 32,
+  },
+  reflectionBlock: {
+    borderTopWidth: 1,
+    opacity: 0.9,
+    paddingTop: 14,
+    gap: 6,
+  },
+  reflectionLabel: {
+    textAlign: "center",
+    opacity: 0.75,
+  },
+  reflectionText: {
+    textAlign: "center",
+    fontStyle: "italic",
+    fontSize: 15,
+    lineHeight: 21,
   },
   wordmark: {
     position: "absolute",
