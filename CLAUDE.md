@@ -174,7 +174,8 @@ Expo consumiendo backend real) · 4 (sistema de diseño) · 5 (favoritos +
 historial + identidad anónima) · 6 (notificación local + Ajustes) · 7
 (compartir como imagen) · 8 (modo oscuro) · 9 (panel admin completo) · 10
 (30 días de contenido sembrado, `scripts/seed_content.py`, 2026-07-15 a
-2026-08-13).
+2026-08-13) · 12 (recordatorios inteligentes + engagement, ver detalle
+abajo).
 
 **⚠️ Pendiente recurrente de Fase 10:** la mayoría de las reflexiones
 sembradas siguen en `status="ai_generated"`, NO publicadas. Erick debe
@@ -207,12 +208,12 @@ apuntándole — no tocar esa fila sin revisar que no rompa el favorito.
   URL firmada de GCS en `logFiles` → `curl` → puede venir comprimido en
   brotli (paquete `brotli` de Python ya instalado en `backend/.venv` si hace
   falta descomprimir manualmente).
-- 🔄 Erick instaló el APK preview en un Android físico (tablet, tuvo que
+- ✅ Erick instaló el APK preview en un Android físico (tablet, tuvo que
   saltarse el bloqueo de Play Protect — ver gotcha #7) y ya carga bien
   (después de los fixes de `EXPO_PUBLIC_API_URL` y de zona horaria de
-  arriba). Falta terminar de probar el golden path completo (favorito,
-  historial, compartir imagen, modo oscuro) — quedó pendiente por una
-  ronda de bugs de UX en Ajustes (ver abajo).
+  arriba). Golden path completo probado en dispositivo (favorito,
+  historial, compartir imagen, modo oscuro, y todo lo de Fase 12 abajo) —
+  confirmado funcionando.
 - ✅ **Panel admin desplegado en Railway** como servicio propio
   (`passionate-determination`, ver Infraestructura arriba). CORS, Node y
   login de Firebase en producción, todo confirmado funcionando. El
@@ -271,6 +272,52 @@ apuntándole — no tocar esa fila sin revisar que no rompa el favorito.
   tienda, screenshots, cuestionario de clasificación de contenido,
   formulario de seguridad de datos — ya informado por la política de
   privacidad escrita).
+
+**Cerrada — Fase 12** (recordatorios inteligentes + engagement, probada en
+dispositivo físico el 2026-07-19):
+- **Dos recordatorios diarios (mañana/noche) en vez de uno genérico** —
+  `AppSettings.morning_reminder_enabled/time` y `night_reminder_enabled/time`
+  reemplazan los antiguos `notification_enabled/time` (migración
+  `725ae2b49f65`, ya aplicada a producción). Ambos recordatorios apuntan al
+  mismo versículo del día — son avisos genéricos, no entregan contenido
+  distinto, así que no rompen la lógica de "un versículo por día".
+- **Prompt contextual para activar los recordatorios** — modal
+  (`ReminderPrompt.tsx`) en la primera visita a Ajustes + banner no
+  invasivo (`ReminderBanner.tsx`) en Inicio desde la 2ª sesión de la app.
+  Comparten un solo flag `reminder-prompt-dismissed` en AsyncStorage
+  (`src/lib/reminderPrompt.ts`) — aceptar o descartar cualquiera de los
+  dos oculta ambos para siempre. El conteo de sesiones
+  (`getSessionCountAndRecordOpen`) se lee e incrementa en una sola función
+  atómica, llamada desde un único componente (`ReminderBanner`, montado
+  una vez por lanzamiento vía el tab persistente de Inicio) para evitar
+  condiciones de carrera de lectura/escritura entre componentes distintos.
+  Lógica de "pedir permiso + programar ambos recordatorios + actualizar
+  Ajustes" extraída a `useActivateReminders.ts` para no duplicarla entre
+  el modal y el banner.
+- **Búsqueda de reflexión por estado de ánimo** — `GET
+  /reflections/by-mood` (`backend/app/routers/daily_verse.py`) filtra
+  reflexiones publicadas por `mood_tags` y devuelve una al azar
+  (excluyendo la actual si se pide "otra"). Botón "Buscar por estado de
+  ánimo" en Inicio → `app/mood/`.
+- **Compartir imagen incluye la reflexión personal**, no solo la
+  editorial (`ShareCard.tsx`, `ShareSheet.tsx`).
+- **Buscadores por referencia/texto** en Favoritos y Diario
+  (`SearchInput.tsx` + `normalizeForSearch.ts`, reutilizados en ambas
+  pantallas).
+- **Pestaña "Explorados hoy" en Historial** — lista los versículos que el
+  usuario navegó ese día (fuera del historial oficial), vía
+  `src/lib/recentlyViewed.ts`, también usado desde `app/mood/[tag].tsx`.
+- **Fixes de loading/UX descubiertos al probar en dispositivo real:**
+  - Historial: el loading quedaba pegado a los botones de segmento en vez
+    de ocupar el espacio real donde carga el contenido — principio a
+    replicar en cualquier loading state nuevo: "debe aparecer donde en
+    realidad va a aparecer la data".
+  - `MyReflectionEditor.tsx` ya exponía `isLoading` desde el hook pero no
+    se usaba — causaba un pop-in brusco del texto de "Mi reflexión" tras
+    unos segundos (gotcha de conexiones idle de Postgres en Railway, ver
+    arriba). Ahora muestra un `ActivityIndicator` mientras carga.
+  - Mensaje de estado vacío de Diario quedaba pegado arriba; ahora usa el
+    mismo estilo (centrado, `marginTop: xxl`) que el de Favoritos.
 
 **No iniciado:** publicación en App Store (iOS) — explícitamente pospuesta,
 también requiere EAS Build porque Windows no puede compilar iOS localmente.
