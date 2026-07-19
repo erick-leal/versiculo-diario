@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import type { DailyVerseOut } from "@versiculo-diario/shared";
 
@@ -9,7 +9,7 @@ import { AppText } from "./AppText";
 
 export function MyReflectionEditor({ dailyVerse }: { dailyVerse: DailyVerseOut }) {
   const theme = useTheme();
-  const { entry, save, remove, isSaving, isRemoving } = usePersonalReflectionForDay(dailyVerse);
+  const { entry, save, remove, isSaving, isRemoving, isLoading } = usePersonalReflectionForDay(dailyVerse);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(entry?.body ?? "");
 
@@ -49,7 +49,7 @@ export function MyReflectionEditor({ dailyVerse }: { dailyVerse: DailyVerseOut }
     >
       <View style={styles.header}>
         <AppText variant="label">Mi reflexión</AppText>
-        {!editing && (
+        {!editing && !isLoading && (
           <Pressable
             onPress={() => setEditing(true)}
             hitSlop={8}
@@ -65,7 +65,11 @@ export function MyReflectionEditor({ dailyVerse }: { dailyVerse: DailyVerseOut }
         )}
       </View>
 
-      {editing ? (
+      {isLoading ? (
+        <View style={{ marginTop: theme.spacing.sm, alignItems: "flex-start" }}>
+          <ActivityIndicator size="small" color={theme.colors.accent} />
+        </View>
+      ) : editing ? (
         <>
           <TextInput
             value={draft}
