@@ -41,8 +41,10 @@ export type DarkModePreference = "light" | "dark" | "system";
 
 export interface AppSettingsOut {
   dark_mode: DarkModePreference;
-  notification_enabled: boolean;
-  notification_time: string; // "HH:MM:SS"
+  morning_reminder_enabled: boolean;
+  morning_reminder_time: string; // "HH:MM:SS"
+  night_reminder_enabled: boolean;
+  night_reminder_time: string; // "HH:MM:SS"
 }
 
 export type AppSettingsUpdate = Partial<AppSettingsOut>;

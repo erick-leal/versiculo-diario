@@ -98,10 +98,12 @@ class AppSettings(Base):
 
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), primary_key=True)
     dark_mode: Mapped[str] = mapped_column(Text, default="system")
-    # Opt-in, no opt-out: recien se activa cuando el usuario lo pide
-    # explicitamente desde Configuracion (ahi se pide permiso del SO).
-    notification_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
-    notification_time: Mapped[time] = mapped_column(Time, default=time(8, 0))
+    # Opt-in, no opt-out: recien se activan cuando el usuario lo pide
+    # explicitamente (prompt contextual o Ajustes, ahi se pide permiso del SO).
+    morning_reminder_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    morning_reminder_time: Mapped[time] = mapped_column(Time, default=time(7, 0))
+    night_reminder_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    night_reminder_time: Mapped[time] = mapped_column(Time, default=time(21, 0))
 
 
 class PushToken(Base):
