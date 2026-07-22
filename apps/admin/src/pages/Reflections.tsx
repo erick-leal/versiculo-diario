@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 
 import {
+  bulkPublishReflections,
   createReflection,
   deleteReflection,
   listReflections,
@@ -59,6 +60,9 @@ export function Reflections() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [onlyPending, setOnlyPending] = useState(false);
+  const [publishing, setPublishing] = useState(false);
 
   const load = () => {
     setLoading(true);
@@ -137,6 +141,38 @@ export function Reflections() {
       setError(err instanceof Error ? err.message : String(err));
     }
   };
+
+  const toggleSelected = (id: number) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const handleBulkPublish = async () => {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`¿Publicar ${selectedIds.size} reflexión(es) seleccionada(s)?`)) return;
+    setError(null);
+    setPublishing(true);
+    try {
+      await bulkPublishReflections([...selectedIds]);
+      setSelectedIds(new Set());
+      load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const visibleReflections = onlyPending
+    ? reflections.filter((r) => r.status !== "published")
+    : reflections;
 
   return (
     <div className="verses-page">
@@ -245,31 +281,59 @@ export function Reflections() {
       {loading && <p>Cargando...</p>}
 
       {!loading && (
-        <ul className="verse-list">
-          {reflections.map((reflection) => (
-            <li key={reflection.id} className="verse-item">
-              <div>
-                <strong>{reflection.verse.reference}</strong>{" "}
-                <span className="verse-translation">
-                  {STATUS_LABELS[reflection.status]} · {SOURCE_LABELS[reflection.source]}
-                  {reflection.reviewed_by ? ` · revisado por ${reflection.reviewed_by}` : ""}
-                </span>
-                {reflection.title && <p className="verse-text"><strong>{reflection.title}</strong></p>}
-                <p className="verse-text">{reflection.body}</p>
-                {reflection.mood_tags.length > 0 && (
-                  <p className="verse-translation">
-                    {reflection.mood_tags.map((tag) => MOOD_TAG_LABELS[tag]).join(", ")}
-                  </p>
-                )}
-              </div>
-              <div className="verse-item-actions">
-                <button onClick={() => startEdit(reflection)}>Editar</button>
-                <button onClick={() => handleDelete(reflection.id)}>Eliminar</button>
-              </div>
-            </li>
-          ))}
-          {reflections.length === 0 && <p>No hay reflexiones todavía.</p>}
-        </ul>
+        <>
+          <div className="verse-form-row" style={{ alignItems: "center" }}>
+            <label className="verse-form-checkbox">
+              <input
+                type="checkbox"
+                checked={onlyPending}
+                onChange={(e) => setOnlyPending(e.target.checked)}
+              />
+              Mostrar solo pendientes de publicar
+            </label>
+            <button
+              type="button"
+              disabled={selectedIds.size === 0 || publishing}
+              onClick={handleBulkPublish}
+            >
+              {publishing ? "Publicando..." : `Publicar seleccionadas (${selectedIds.size})`}
+            </button>
+          </div>
+
+          <ul className="verse-list">
+            {visibleReflections.map((reflection) => (
+              <li key={reflection.id} className="verse-item">
+                <div>
+                  <label className="verse-form-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(reflection.id)}
+                      onChange={() => toggleSelected(reflection.id)}
+                      disabled={reflection.status === "published"}
+                    />
+                  </label>{" "}
+                  <strong>{reflection.verse.reference}</strong>{" "}
+                  <span className="verse-translation">
+                    {STATUS_LABELS[reflection.status]} · {SOURCE_LABELS[reflection.source]}
+                    {reflection.reviewed_by ? ` · revisado por ${reflection.reviewed_by}` : ""}
+                  </span>
+                  {reflection.title && <p className="verse-text"><strong>{reflection.title}</strong></p>}
+                  <p className="verse-text">{reflection.body}</p>
+                  {reflection.mood_tags.length > 0 && (
+                    <p className="verse-translation">
+                      {reflection.mood_tags.map((tag) => MOOD_TAG_LABELS[tag]).join(", ")}
+                    </p>
+                  )}
+                </div>
+                <div className="verse-item-actions">
+                  <button onClick={() => startEdit(reflection)}>Editar</button>
+                  <button onClick={() => handleDelete(reflection.id)}>Eliminar</button>
+                </div>
+              </li>
+            ))}
+            {visibleReflections.length === 0 && <p>No hay reflexiones para mostrar.</p>}
+          </ul>
+        </>
       )}
     </div>
   );

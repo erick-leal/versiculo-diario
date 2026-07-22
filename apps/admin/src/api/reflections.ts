@@ -50,3 +50,5 @@ export const createReflection = (payload: ReflectionInput) =>
 export const updateReflection = (id: number, payload: Partial<ReflectionInput>) =>
   apiPut<AdminReflection>(`/admin/reflections/${id}`, payload);
 export const deleteReflection = (id: number) => apiDelete(`/admin/reflections/${id}`);
+export const bulkPublishReflections = (ids: number[]) =>
+  apiPost<AdminReflection[]>("/admin/reflections/bulk-publish", { ids });

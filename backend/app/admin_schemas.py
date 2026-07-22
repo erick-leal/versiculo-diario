@@ -81,6 +81,10 @@ class ReflectionCreate(BaseModel):
         return _validate_mood_tags(value)
 
 
+class BulkPublishRequest(BaseModel):
+    ids: list[int]
+
+
 class ReflectionUpdate(BaseModel):
     verse_id: int | None = None
     title: str | None = None

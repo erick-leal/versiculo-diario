@@ -3,7 +3,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.admin_auth import require_admin
-from app.admin_schemas import AdminReflectionOut, ReflectionCreate, ReflectionUpdate
+from app.admin_schemas import (
+    AdminReflectionOut,
+    BulkPublishRequest,
+    ReflectionCreate,
+    ReflectionUpdate,
+)
 from app.database import get_db
 from app.models import Reflection, Verse
 
@@ -15,6 +20,27 @@ REVIEWED_STATUSES = {"reviewed", "published"}
 @router.get("", response_model=list[AdminReflectionOut])
 def list_reflections(db: Session = Depends(get_db)) -> list[Reflection]:
     return db.query(Reflection).order_by(Reflection.created_at.desc()).limit(200).all()
+
+
+@router.post("/bulk-publish", response_model=list[AdminReflectionOut])
+def bulk_publish_reflections(
+    payload: BulkPublishRequest,
+    claims: dict = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> list[Reflection]:
+    reflections = db.query(Reflection).filter(Reflection.id.in_(payload.ids)).all()
+    missing = set(payload.ids) - {r.id for r in reflections}
+    if missing:
+        raise HTTPException(status_code=404, detail=f"IDs no encontrados: {sorted(missing)}")
+
+    for reflection in reflections:
+        reflection.status = "published"
+        reflection.reviewed_by = claims.get("email")
+
+    db.commit()
+    for reflection in reflections:
+        db.refresh(reflection)
+    return reflections
 
 
 @router.post("", response_model=AdminReflectionOut, status_code=201)
