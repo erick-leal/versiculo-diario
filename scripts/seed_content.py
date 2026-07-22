@@ -114,7 +114,10 @@ VERSES = [
      "Nosotros le amamos a Él, porque Él nos amó primero."),
 ]
 
-# reference -> (title, body). Juan 3:16 no esta aca: ya tiene reflexion publicada.
+# reference -> (title, body, mood_tags). Juan 3:16 no esta aca: ya tiene
+# reflexion publicada. Los mood_tags se deciden ACA, al escribir el texto
+# (cuando se tiene el contexto completo de lo que se quiso decir), no despues
+# a mano en el admin.
 REFLECTIONS = {
     "Salmos 23:1": (
         "Lo que significa que no te falte nada",
@@ -124,6 +127,7 @@ REFLECTIONS = {
         "cubierto, aunque el camino tenga valles. Hoy, si sientes que te falta algo, "
         "quizás la pregunta no es qué te falta, sino en quién estás confiando para "
         "conseguirlo.",
+        ["ansiedad", "esperanza"],
     ),
     "Filipenses 4:13": (
         "No es una promesa de éxito, es una de contentamiento",
@@ -133,6 +137,7 @@ REFLECTIONS = {
         "lograr lo que queramos, es para sostenernos en cualquier circunstancia que "
         "nos toque. Eso es, en el fondo, una promesa más profunda que la que solemos "
         "citar.",
+        ["fortaleza", "gratitud"],
     ),
     "Salmos 46:1": (
         "Un refugio, no una salida",
@@ -141,6 +146,7 @@ REFLECTIONS = {
         "promete una vida sin tormentas, promete compañía dentro de ellas. Si hoy "
         "atraviesas algo difícil, este versículo no te pide que finjas que no pasa "
         "nada — te invita a buscar refugio mientras dura.",
+        ["ansiedad", "tristeza", "fortaleza"],
     ),
     "Isaías 41:10": (
         "El temor no desaparece, pero no viaja solo",
@@ -148,6 +154,7 @@ REFLECTIONS = {
         "yo estoy contigo». Es una promesa de compañía, no de ausencia de dificultad. "
         "La próxima vez que el miedo aparezca, este versículo no te pide que lo "
         "niegues, solo que recuerdes que no lo enfrentas solo.",
+        ["ansiedad", "fortaleza"],
     ),
     "Jeremías 29:11": (
         "Una promesa para quienes esperan, no para quienes tienen prisa",
@@ -157,6 +164,7 @@ REFLECTIONS = {
         "sentido. Si sientes que tu vida está en un compás de espera, esto no "
         "significa que Dios se olvidó del plan — significa que todavía no llegaste "
         "al capítulo donde se ve.",
+        ["esperanza", "agotamiento", "duda"],
     ),
     "Romanos 8:28": (
         "No dice que todo es bueno, dice que Dios trabaja en todo",
@@ -165,6 +173,7 @@ REFLECTIONS = {
         "que promete es que nada queda fuera del alcance de Dios para ser usado hacia "
         "un bien mayor. Eso no vuelve automáticamente livianas las cosas difíciles, "
         "pero sí cambia lo que podemos esperar de ellas con el tiempo.",
+        ["tristeza", "esperanza"],
     ),
     "Proverbios 3:5-6": (
         "Confiar cuando no entendemos",
@@ -174,6 +183,7 @@ REFLECTIONS = {
         "nuestro propio entendimiento la última palabra. A veces el camino se "
         "endereza recién cuando soltamos la necesidad de entenderlo todo antes de "
         "dar el paso.",
+        ["duda", "ansiedad"],
     ),
     "Mateo 11:28": (
         "Una invitación a soltar, no a aguantar más",
@@ -182,6 +192,7 @@ REFLECTIONS = {
         "solemos escuchar del mundo, que casi siempre pide más resistencia. Si hoy "
         "estás cansado, este versículo no es una exigencia más, es un lugar donde "
         "soltar la carga.",
+        ["agotamiento", "ansiedad"],
     ),
     "1 Corintios 13:4-7": (
         "Una descripción, no solo un ideal romántico",
@@ -190,6 +201,7 @@ REFLECTIONS = {
         "peleando entre sí. Es una lista concreta y exigente: paciencia, humildad, no "
         "llevar cuentas. Vale la pena leerla hoy pensando no en una pareja, sino en "
         "la próxima persona que te haga perder la paciencia.",
+        [],
     ),
     "Salmos 118:24": (
         "Este día, no el de ayer ni el que viene",
@@ -199,6 +211,7 @@ REFLECTIONS = {
         "tiene, no con lo que faltó ni con lo que falta. A veces la gratitud empieza "
         "ahí, no en las circunstancias ideales, sino en la decisión de mirar hoy con "
         "atención.",
+        ["gratitud", "gozo"],
     ),
     "Josué 1:9": (
         "El valor no es la ausencia de miedo",
@@ -207,6 +220,7 @@ REFLECTIONS = {
         "mandato no es «no sientas miedo», es «esfuérzate y sé valiente», que da por "
         "hecho que el miedo va a estar presente. El valor bíblico no es sentirse "
         "invencible, es actuar con la certeza de que no estás solo en eso.",
+        ["ansiedad", "fortaleza", "duda"],
     ),
     "Filipenses 4:6-7": (
         "La ansiedad no se resuelve, se entrega",
@@ -216,6 +230,7 @@ REFLECTIONS = {
         "es una paz que «sobrepasa todo entendimiento» — una paz que no siempre tiene "
         "lógica visible, pero que sostiene igual. Si hoy la ansiedad no tiene una "
         "salida clara, este versículo ofrece al menos un lugar donde ponerla.",
+        ["ansiedad", "paz"],
     ),
     "2 Corintios 5:17": (
         "Lo viejo no se repara, se vuelve nuevo",
@@ -224,6 +239,7 @@ REFLECTIONS = {
         "historia de nadie, pero sí cambia qué tiene la última palabra sobre quién "
         "eres. Si cargas con una versión antigua de vos mismo que ya no querés seguir "
         "siendo, este versículo dice que ese cambio es posible, no solo deseable.",
+        ["duda", "esperanza"],
     ),
     "Salmos 34:18": (
         "Dios está más cerca en el quebranto, no más lejos",
@@ -232,6 +248,7 @@ REFLECTIONS = {
         "«cercano a los quebrantados de corazón». Si hoy tu corazón está roto por "
         "algo, esta promesa no es una explicación del porqué — es la certeza de que "
         "no estás más lejos de Dios por estar sufriendo, todo lo contrario.",
+        ["tristeza", "duelo"],
     ),
     "Mateo 6:33": (
         "El orden importa",
@@ -241,6 +258,7 @@ REFLECTIONS = {
         "confiar en que lo demás se va acomodando. Es una invitación a revisar, de "
         "vez en cuando, qué es lo que realmente ocupa el primer lugar en un día "
         "común.",
+        ["ansiedad"],
     ),
     "Romanos 12:2": (
         "Transformarse empieza en cómo pensamos",
@@ -249,6 +267,7 @@ REFLECTIONS = {
         "cómo vivimos. Es más lento que copiar reglas externas, pero también más "
         "duradero. La pregunta que deja este versículo no es «¿qué debería dejar de "
         "hacer?» sino «¿qué estoy dejando que forme mi manera de pensar?».",
+        [],
     ),
     "Gálatas 5:22-23": (
         "Fruto, no esfuerzo",
@@ -258,6 +277,7 @@ REFLECTIONS = {
         "algo está creciendo bien por dentro. Vale la pena, hoy, mirar cuál de estos "
         "frutos se siente más escaso, no para exigírselo, sino para prestarle "
         "atención a la raíz.",
+        ["gozo", "paz"],
     ),
     "Salmos 27:1": (
         "¿De quién temeré?",
@@ -266,6 +286,7 @@ REFLECTIONS = {
         "fortaleza, ¿qué otra cosa tiene el peso suficiente para quitarnos la paz? "
         "No es que el peligro deje de ser real, es que deja de tener la última "
         "palabra.",
+        ["ansiedad", "fortaleza"],
     ),
     "Isaías 40:31": (
         "Esperar no es quedarse quieto",
@@ -274,6 +295,7 @@ REFLECTIONS = {
         "activa, que no se apura ni se resigna, y que termina renovando las fuerzas "
         "en vez de agotarlas. Si estás en un tiempo de espera, esta promesa no apura "
         "el reloj, pero sí asegura que no estás perdiendo el tiempo.",
+        ["agotamiento", "esperanza"],
     ),
     "1 Pedro 5:7": (
         "A Él sí le importa",
@@ -281,6 +303,7 @@ REFLECTIONS = {
         "imagen de soltar algo con intención, no de mencionarlo de pasada. La razón "
         "que da para hacerlo no es «porque no tiene remedio», sino «porque Él tiene "
         "cuidado de vosotros» — un motivo relacional, no resignado.",
+        ["ansiedad", "agotamiento"],
     ),
     "Salmos 91:1-2": (
         "Un lugar donde habitar, no solo visitar",
@@ -290,6 +313,7 @@ REFLECTIONS = {
         "confianza que describe el versículo —«mi Dios, en él confiaré»— se "
         "construye con esa cercanía sostenida en el tiempo, no de un día para el "
         "otro.",
+        ["ansiedad", "paz", "fortaleza"],
     ),
     "Mateo 5:14-16": (
         "La luz no se esconde, ilumina",
@@ -297,6 +321,7 @@ REFLECTIONS = {
         "desafío no es convertirse en algo que no se es, es dejar de esconder lo que "
         "ya está ahí. Vale la pena preguntarse, hoy, qué «almud» —qué excusa, miedo "
         "o costumbre— podría estar tapando esa luz sin necesidad.",
+        ["duda"],
     ),
     "Efesios 2:8-9": (
         "Un regalo, no una cuenta pendiente",
@@ -306,6 +331,7 @@ REFLECTIONS = {
         "recibe, no algo que se conquista. Eso no vuelve las buenas obras "
         "innecesarias, pero sí cambia el lugar de donde salen: no de la obligación "
         "de merecer algo, sino de la libertad de ya haberlo recibido.",
+        ["duda", "gratitud"],
     ),
     "Salmos 139:14": (
         "Formidables y maravillosas, dice el salmo — de vos",
@@ -315,6 +341,7 @@ REFLECTIONS = {
         "propio cuerpo, la propia vida. En un día donde cueste verse con algo de "
         "valor, este versículo no pide que lo sientas — solo te recuerda que ya es "
         "verdad, lo sientas o no.",
+        ["duda", "gratitud"],
     ),
     "Lamentaciones 3:22-23": (
         "Escrito en medio del duelo, no a pesar de él",
@@ -323,6 +350,7 @@ REFLECTIONS = {
         "importa: la fidelidad de Dios no se afirma aquí desde la comodidad, se "
         "afirma desde el dolor más profundo. «Nuevas son cada mañana» no es una "
         "frase optimista superficial, es una verdad que sobrevivió a la pérdida.",
+        ["duelo", "tristeza", "esperanza"],
     ),
     "Hebreos 11:1": (
         "La fe no es certeza visible, es sustancia invisible",
@@ -331,6 +359,7 @@ REFLECTIONS = {
         "se espera. Es sostener algo real aunque no se pueda comprobar todavía. No "
         "hace falta tener todas las respuestas para tener fe genuina; alcanza con "
         "sostener la esperanza con las manos abiertas.",
+        ["duda", "esperanza"],
     ),
     "Juan 14:27": (
         "Una paz distinta a la que promete el mundo",
@@ -340,6 +369,7 @@ REFLECTIONS = {
         "cambian. «No se turbe vuestro corazón» no es una orden de sentir calma por "
         "obligación, es una invitación a apoyarse en un tipo de paz que no depende "
         "de que todo esté resuelto.",
+        ["ansiedad", "paz"],
     ),
     "Salmos 121:1-2": (
         "Mirar hacia arriba antes de buscar la solución",
@@ -349,6 +379,7 @@ REFLECTIONS = {
         "específicamente de Jehová, hacedor de los cielos y la tierra. Antes de "
         "buscar ayuda en cualquier otro lado, vale la pena preguntarse hacia dónde "
         "estamos mirando primero.",
+        ["ansiedad", "esperanza"],
     ),
     "1 Juan 4:19": (
         "El amor como respuesta, no como esfuerzo",
@@ -358,6 +389,7 @@ REFLECTIONS = {
         "conseguir algo, sino desde algo que ya se recibió. Hoy, amar a alguien "
         "difícil puede doler menos si se hace desde ese lugar, no desde la "
         "obligación.",
+        ["gratitud"],
     ),
 }
 
@@ -386,13 +418,14 @@ for reference, verse in verse_by_reference.items():
     if existing:
         reflection_by_reference[reference] = existing
         continue
-    title, body = REFLECTIONS[reference]
+    title, body, mood_tags = REFLECTIONS[reference]
     reflection = Reflection(
         verse_id=verse.id,
         title=title,
         body=body,
         status="ai_generated",
         source="ai_assisted",
+        mood_tags=mood_tags,
     )
     db.add(reflection)
     db.flush()
