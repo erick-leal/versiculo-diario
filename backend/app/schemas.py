@@ -1,7 +1,7 @@
 from datetime import date, datetime, time
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class VerseOut(BaseModel):
@@ -54,7 +54,7 @@ class PersonalReflectionOut(BaseModel):
 
 class PersonalReflectionUpsert(BaseModel):
     daily_verse_id: int
-    body: str
+    body: str = Field(min_length=1, max_length=2000)
 
 
 class AppSettingsOut(BaseModel):
