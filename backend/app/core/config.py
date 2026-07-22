@@ -11,6 +11,7 @@ class Settings(BaseSettings):
 
     database_url: str
     firebase_project_id: str
+    admin_email: str
 
     @field_validator("database_url")
     @classmethod
