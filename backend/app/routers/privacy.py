@@ -19,7 +19,7 @@ _PRIVACY_HTML = """<!doctype html>
 </head>
 <body>
 <h1>Política de Privacidad — Versículo Diario</h1>
-<p>Última actualización: julio de 2026</p>
+<p>Última actualización: 28 de julio de 2026</p>
 
 <p>Versículo Diario es una aplicación gratuita para acercar a las personas a la
 Biblia mediante un versículo y una reflexión diaria. Esta política explica qué
@@ -36,6 +36,11 @@ información maneja la app y por qué.</p>
   anónimo.</li>
   <li><strong>Tu configuración de la app</strong>: preferencia de modo claro/oscuro
   y la hora que elegís para el recordatorio diario.</li>
+  <li><strong>Tus reflexiones personales del Diario.</strong> Si escribís tu
+  propia reflexión sobre el versículo del día, ese texto se guarda asociado a
+  tu identificador anónimo para que puedas volver a verlo o editarlo. Nadie
+  más que vos accede a ese texto — no se usa para publicidad ni se comparte
+  con terceros.</li>
 </ul>
 
 <h2>Qué NO recolectamos</h2>
