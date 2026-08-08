@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import {
   bulkPublishReflections,
+  bulkReviewReflections,
   createReflection,
   deleteReflection,
   listReflections,
@@ -61,8 +62,9 @@ export function Reflections() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const [onlyPending, setOnlyPending] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<ReflectionStatus | "all">("ai_generated");
   const [publishing, setPublishing] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
 
   const load = () => {
     setLoading(true);
@@ -170,9 +172,45 @@ export function Reflections() {
     }
   };
 
-  const visibleReflections = onlyPending
-    ? reflections.filter((r) => r.status !== "published")
-    : reflections;
+  const handleBulkReview = async () => {
+    if (selectedIds.size === 0) return;
+    if (
+      !confirm(
+        `¿Marcar ${selectedIds.size} reflexión(es) como revisadas? El cron diario las va a ` +
+          `programar y publicar solo, sin fecha fija.`,
+      )
+    )
+      return;
+    setError(null);
+    setReviewing(true);
+    try {
+      await bulkReviewReflections([...selectedIds]);
+      setSelectedIds(new Set());
+      load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setReviewing(false);
+    }
+  };
+
+  const visibleReflections =
+    statusFilter === "all" ? reflections : reflections.filter((r) => r.status === statusFilter);
+
+  const allVisibleSelected =
+    visibleReflections.length > 0 && visibleReflections.every((r) => selectedIds.has(r.id));
+
+  const toggleSelectAllVisible = () => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (allVisibleSelected) {
+        visibleReflections.forEach((r) => next.delete(r.id));
+      } else {
+        visibleReflections.forEach((r) => next.add(r.id));
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="verses-page">
@@ -283,14 +321,35 @@ export function Reflections() {
       {!loading && (
         <>
           <div className="verse-form-row" style={{ alignItems: "center" }}>
+            <label className="verse-form-narrow">
+              Estado
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as ReflectionStatus | "all")}
+              >
+                <option value="all">Todos</option>
+                {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label className="verse-form-checkbox">
               <input
                 type="checkbox"
-                checked={onlyPending}
-                onChange={(e) => setOnlyPending(e.target.checked)}
+                checked={allVisibleSelected}
+                onChange={toggleSelectAllVisible}
               />
-              Mostrar solo pendientes de publicar
+              Seleccionar todo lo visible ({visibleReflections.length})
             </label>
+            <button
+              type="button"
+              disabled={selectedIds.size === 0 || reviewing}
+              onClick={handleBulkReview}
+            >
+              {reviewing ? "Marcando..." : `Marcar como revisadas (${selectedIds.size})`}
+            </button>
             <button
               type="button"
               disabled={selectedIds.size === 0 || publishing}
@@ -299,6 +358,11 @@ export function Reflections() {
               {publishing ? "Publicando..." : `Publicar seleccionadas (${selectedIds.size})`}
             </button>
           </div>
+          <p className="verse-translation">
+            Tip: "Marcar como revisadas" es lo que necesitas para el lote nuevo (sin fecha
+            asignada) -- el cron diario las programa y publica solo. "Publicar seleccionadas" es
+            para reflexiones que ya tienen fecha puesta a mano en el calendario.
+          </p>
 
           <ul className="verse-list">
             {visibleReflections.map((reflection) => (
@@ -309,7 +373,6 @@ export function Reflections() {
                       type="checkbox"
                       checked={selectedIds.has(reflection.id)}
                       onChange={() => toggleSelected(reflection.id)}
-                      disabled={reflection.status === "published"}
                     />
                   </label>{" "}
                   <strong>{reflection.verse.reference}</strong>{" "}

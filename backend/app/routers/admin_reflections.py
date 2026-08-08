@@ -19,7 +19,35 @@ REVIEWED_STATUSES = {"reviewed", "published"}
 
 @router.get("", response_model=list[AdminReflectionOut])
 def list_reflections(db: Session = Depends(get_db)) -> list[Reflection]:
-    return db.query(Reflection).order_by(Reflection.created_at.desc()).limit(200).all()
+    # Límite subido de 200 a 500: con los lotes de seed_content_batch*.py el
+    # total de reflexiones crece rápido y un límite bajo empieza a esconder
+    # contenido viejo en este listado (aunque siga existiendo en la DB).
+    return db.query(Reflection).order_by(Reflection.created_at.desc()).limit(500).all()
+
+
+@router.post("/bulk-review", response_model=list[AdminReflectionOut])
+def bulk_review_reflections(
+    payload: BulkPublishRequest,
+    claims: dict = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> list[Reflection]:
+    """Pasa reflexiones (típicamente 'ai_generated') a 'reviewed', sin
+    publicarlas ni asignarles fecha. El cron de auto_schedule_verse las toma
+    de ahí solo, día a día, y recién en ese momento las pasa a 'published'
+    con una fecha asignada."""
+    reflections = db.query(Reflection).filter(Reflection.id.in_(payload.ids)).all()
+    missing = set(payload.ids) - {r.id for r in reflections}
+    if missing:
+        raise HTTPException(status_code=404, detail=f"IDs no encontrados: {sorted(missing)}")
+
+    for reflection in reflections:
+        reflection.status = "reviewed"
+        reflection.reviewed_by = claims.get("email")
+
+    db.commit()
+    for reflection in reflections:
+        db.refresh(reflection)
+    return reflections
 
 
 @router.post("/bulk-publish", response_model=list[AdminReflectionOut])
@@ -28,6 +56,10 @@ def bulk_publish_reflections(
     claims: dict = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> list[Reflection]:
+    """Publica directamente. Pensado para reflexiones que ya tienen una
+    fecha asignada a mano en el calendario (/daily-verses) y necesitan
+    quedar visibles ya mismo -- NO para el lote nuevo sin fecha, que debe
+    pasar por bulk-review y esperar al cron."""
     reflections = db.query(Reflection).filter(Reflection.id.in_(payload.ids)).all()
     missing = set(payload.ids) - {r.id for r in reflections}
     if missing:

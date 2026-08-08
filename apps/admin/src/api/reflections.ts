@@ -52,3 +52,5 @@ export const updateReflection = (id: number, payload: Partial<ReflectionInput>) 
 export const deleteReflection = (id: number) => apiDelete(`/admin/reflections/${id}`);
 export const bulkPublishReflections = (ids: number[]) =>
   apiPost<AdminReflection[]>("/admin/reflections/bulk-publish", { ids });
+export const bulkReviewReflections = (ids: number[]) =>
+  apiPost<AdminReflection[]>("/admin/reflections/bulk-review", { ids });
