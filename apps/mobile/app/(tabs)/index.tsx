@@ -30,16 +30,23 @@ export default function HomeScreen() {
         {isError && <ErrorState message={error.message} />}
         {data && <VerseCard dailyVerse={data} />}
 
-        <Pressable
-          onPress={() => router.push("/mood")}
-          style={[styles.moodButton, { borderColor: theme.colors.border, marginTop: theme.spacing.xl }]}
-          accessibilityRole="button"
-        >
-          <Feather name="compass" size={16} color={theme.colors.accent} />
-          <AppText variant="label" style={{ color: theme.colors.accent, marginLeft: theme.spacing.sm }}>
-            Buscar por estado de ánimo
-          </AppText>
-        </Pressable>
+        {/* Se oculta mientras carga el versículo del día: si aparecía de
+            inmediato, alguien podía tocarlo antes de ver el contenido de
+            hoy pensando que ya terminó de cargar. Se muestra tanto con
+            datos como en error, para no bloquear la exploración si el
+            versículo del día falla. */}
+        {!isPending && (
+          <Pressable
+            onPress={() => router.push("/mood")}
+            style={[styles.moodButton, { borderColor: theme.colors.border, marginTop: theme.spacing.xl }]}
+            accessibilityRole="button"
+          >
+            <Feather name="compass" size={16} color={theme.colors.accent} />
+            <AppText variant="label" style={{ color: theme.colors.accent, marginLeft: theme.spacing.sm }}>
+              Buscar por estado de ánimo
+            </AppText>
+          </Pressable>
+        )}
 
         <ReminderBanner settings={settings} />
       </ScrollView>
