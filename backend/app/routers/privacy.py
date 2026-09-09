@@ -19,7 +19,7 @@ _PRIVACY_HTML = """<!doctype html>
 </head>
 <body>
 <h1>Política de Privacidad — Versículo Diario</h1>
-<p>Última actualización: 28 de julio de 2026</p>
+<p>Última actualización: 9 de septiembre de 2026</p>
 
 <p>Versículo Diario es una aplicación gratuita para acercar a las personas a la
 Biblia mediante un versículo y una reflexión diaria. Esta política explica qué
@@ -57,11 +57,21 @@ información maneja la app y por qué.</p>
 se envía desde un servidor y no requiere compartir información adicional para
 funcionar.</p>
 
+<h2>Diagnóstico técnico y reportes de fallos</h2>
+<p>Usamos Sentry, un servicio externo, para detectar errores técnicos y fallos
+de la app (por ejemplo, si una pantalla se cierra inesperadamente). Estos
+reportes incluyen el error técnico ocurrido, en qué pantalla pasó, y datos
+generales del dispositivo (modelo, versión de Android). No enviamos tu
+dirección IP, tu identificador anónimo, ni el contenido de tus favoritos,
+diario o configuración — solo lo necesario para entender y corregir el
+problema técnico.</p>
+
 <h2>Con quién compartimos información</h2>
 <p>Los datos descritos arriba se almacenan en nuestra infraestructura de backend
 (Railway) únicamente para que la app funcione (guardar tus favoritos y
-configuración). No vendemos ni compartimos esta información con terceros con
-fines comerciales o publicitarios.</p>
+configuración), y los reportes de fallos técnicos se comparten con Sentry
+según se describe arriba. No vendemos ni compartimos esta información con
+terceros con fines comerciales o publicitarios.</p>
 
 <h2>Eliminar tus datos</h2>
 <p>Como no manejamos cuentas, desinstalar la app elimina el identificador
