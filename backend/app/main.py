@@ -1,3 +1,6 @@
+import os
+
+import sentry_sdk
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -14,6 +17,14 @@ from app.routers import (
     privacy,
     settings,
 )
+
+# Error tracking: solo se activa si SENTRY_DSN esta seteada (Railway en
+# produccion). En dev local, sin la variable, no manda nada. send_default_pii
+# se deja en False (default) porque la app es anonima por diseno y la
+# politica de privacidad promete "sin rastreo" - no mandamos IP/headers del
+# usuario, solo el stack trace y la request (metodo, path, sin body).
+if sentry_dsn := os.getenv("SENTRY_DSN"):
+    sentry_sdk.init(dsn=sentry_dsn)
 
 app = FastAPI(title="Versiculo Diario API")
 
