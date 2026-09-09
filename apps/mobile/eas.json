@@ -8,7 +8,9 @@
       "distribution": "internal",
       "node": "22.13.0",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://versiculo-diario-production.up.railway.app"
+        "EXPO_PUBLIC_API_URL": "https://versiculo-diario-production.up.railway.app",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://4cbedaf1668ba5a359bb11e35125be1d@o4512057061539840.ingest.us.sentry.io/4512057158074368",
+        "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "preview"
       },
       "android": {
         "buildType": "apk"
@@ -17,7 +19,9 @@
     "production": {
       "node": "22.13.0",
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://versiculo-diario-production.up.railway.app"
+        "EXPO_PUBLIC_API_URL": "https://versiculo-diario-production.up.railway.app",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://4cbedaf1668ba5a359bb11e35125be1d@o4512057061539840.ingest.us.sentry.io/4512057158074368",
+        "EXPO_PUBLIC_SENTRY_ENVIRONMENT": "production"
       },
       "android": {
         "buildType": "app-bundle"

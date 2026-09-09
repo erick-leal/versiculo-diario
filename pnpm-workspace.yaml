@@ -3,6 +3,7 @@ packages:
   - "packages/*"
 allowBuilds:
   '@firebase/util': true
+  '@sentry/cli': false
   protobufjs: true
 minimumReleaseAgeExclude:
   - '@expo/cli@54.0.26 || 57.0.8'
