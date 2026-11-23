@@ -37,9 +37,9 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
   (Email/Password, un solo usuario: eleal.escobar@gmail.com).
 - **Backend** (`backend/`): FastAPI + SQLAlchemy 2.0 + Alembic + PostgreSQL.
 - **Compartido** (`packages/shared`): tipos TS compartidos entre mobile/admin.
-- **Infra:** Railway (backend + Postgres + admin, 3 servicios en el proyecto
-  `diligent-reflection`), Firebase (solo Auth del admin, Storage NO se usa —
-  exige plan pago Blaze).
+- **Infra:** Railway (backend + Postgres + admin + cron `auto-schedule-verse`,
+  4 servicios en el proyecto `diligent-reflection`), Firebase (solo Auth del
+  admin, Storage NO se usa — exige plan pago Blaze).
 
 ## Decisiones de producto clave (con el porqué)
 
@@ -166,6 +166,42 @@ Actúa como Lead Mobile Engineer/Architect/mentor técnico:
    privada de Railway). Fix en `backend/app/database.py`:
    `create_engine(..., pool_pre_ping=True, pool_recycle=300)` — recicla
    conexiones proactivamente cada 5 min en vez de esperar a que fallen.
+7. **El Postgres NO tiene acceso público** (decisión de seguridad, desde
+   ~nov 2026). `backend/.env` apunta a un proxy público que solo existe
+   mientras se habilita: para correr scripts locales contra producción
+   (seeds, consultas), Postgres → Settings → Networking → "Add Public
+   Access" (+ Deploy de los cambios pendientes), armar
+   `DATABASE_URL=postgresql+psycopg://postgres:<PGPASSWORD>@<host>:<puerto>/railway`
+   con el host:puerto que muestra Networking, y al terminar **borrar el
+   proxy** otra vez. El `DATABASE_URL` de las Variables es la URL privada
+   (`postgres.railway.internal`), no sirve desde fuera de Railway. Si
+   `DATABASE_PUBLIC_URL` aparece como plantilla `${{...}}`, es porque el
+   proxy aún no está desplegado — el valor se copia con ⋮ → Copy, no
+   editando la fila. Síntoma de que el proxy está cerrado: psycopg
+   "server closed the connection unexpectedly" (el TCP sí conecta).
+8. **"Run now" de un cron ejecuta el deploy ACTIVO**, no el que se está
+   desplegando — después de un push, esperar a que el deploy del servicio
+   cron pase a ACTIVE antes de correrlo a mano.
+
+## Cron de contenido: `auto-schedule-verse`
+
+Servicio Railway separado que corre a diario (09:00 UTC)
+`python -m scripts.auto_schedule_verse` (`backend/scripts/`). Mantiene un
+colchón de 3 días en `DailyVerse` tomando reflexiones `reviewed` al azar y
+pasándolas a `published`. **Flujo editorial actual:** sembrar contenido en
+`ai_generated` → Erick lo revisa en el admin y usa "Marcar como revisadas"
+→ el cron lo programa y publica solo. Ya NO se publica a mano día por día.
+
+- Si no quedan `reviewed`, reutiliza `published` (ya revisadas por humano,
+  no rompe la regla de revisión obligatoria) priorizando la usada hace más
+  tiempo, fuera de un cooldown de 90 días. Nunca toma `draft`/`ai_generated`.
+- Sale con exit code 1 si un día queda sin contenido, para que Railway lo
+  marque en rojo. **Incidente 12–23 nov 2026:** se agotaron las `reviewed`,
+  el respaldo de "repetir" filtraba también por `reviewed` (nunca
+  encontraba nada) y el script salía con 0 → Railway mostraba "succeeded"
+  mientras `/daily-verse` daba 404 doce días. Diagnóstico: logs del cron en
+  Railway ("No hay reflexiones en status='reviewed'…").
+- Si `/daily-verse` da 404, mirar primero los logs del cron, no la app.
 
 ## Estado del roadmap (13 fases)
 
@@ -177,16 +213,18 @@ historial + identidad anónima) · 6 (notificación local + Ajustes) · 7
 2026-08-13) · 12 (recordatorios inteligentes + engagement, ver detalle
 abajo).
 
-**⚠️ Pendiente recurrente de Fase 10:** la mayoría de las reflexiones
-sembradas siguen en `status="ai_generated"`, NO publicadas. Erick debe
-revisarlas y publicarlas una por una en el admin (`/reflections`,
-cambiando el dropdown Estado a "Publicado") **antes de que llegue cada
-fecha**, o `/daily-verse` devuelve 404 ese día — esto ya pasó dos veces
-(16 y 17 de julio) y va a seguir pasando cada día hasta que se publiquen
-con margen. Recomendado: publicar varios días por delante de una sola vez,
-no día a día. Juan 3:16 (2026-07-16) y Filipenses 4:13 (2026-07-17) ya
-están publicados; Juan 3:16 además tiene un favorito real de prueba
-apuntándole — no tocar esa fila sin revisar que no rompa el favorito.
+**Contenido (al 2026-11-23):** 365 versículos distintos = un año sin
+repetir. Lote 1 (30, `seed_content.py`), lote 2 (90,
+`seed_content_batch2.py`) y lote 3 (245, `seed_content_batch3.py` +
+`scripts/content_batch3/`). Las 120 de los lotes 1–2 están `published`;
+las 245 del lote 3 fueron marcadas `reviewed` y el cron las publica una
+por día (alcanzan hasta ~julio 2027). Para un lote nuevo: agregar
+referencias a un `refs.txt`, extraer el texto con
+`scripts/extract_rva1909.py` (valida que no se repitan con lotes
+anteriores — hay que sumar el lote 3 a `existing_references()` si se usa
+para un lote 4), escribir reflexiones y correr el seed con `--check`
+primero. Juan 3:16 tiene un favorito real de prueba apuntándole — no
+tocar esa fila sin revisar que no rompa el favorito.
 
 **En curso — Fase 11** (identidad de app + publicación):
 - ✅ Nombre "Versículo Diario", ícono real, `bundleIdentifier`/`package`
@@ -326,6 +364,22 @@ también requiere EAS Build porque Windows no puede compilar iOS localmente.
 
 - `scripts/seed_content.py` — siembra versículos+reflexiones (detecta y
   nunca sobrescribe fechas con favoritos reales apuntándolas).
+- `scripts/seed_content_batch2.py`, `scripts/seed_content_batch3.py` —
+  lotes que solo siembran `Verse`+`Reflection` en `ai_generated` (sin
+  fechas; el cron las programa). El lote 3 acepta `--check` (valida sin
+  tocar la DB). Correr desde la raíz:
+  `backend/.venv/Scripts/python scripts/seed_content_batch3.py`.
+- `scripts/extract_rva1909.py <data.sql> <refs.txt> <salida.json>` —
+  extrae texto exacto del dump RVA1909 (descargar `data.sql` del repo de
+  iglesianazaret, ~4.5 MB, a una carpeta temporal; no se versiona). Ojo:
+  el dump tiene artefactos (ej. Salmos 29:11 trae "Salmo de David." del
+  salmo siguiente) — si un texto sale raro, cambiar de versículo, nunca
+  editar el texto bíblico.
+- `backend/scripts/auto_schedule_verse.py` — el cron (ver sección propia).
+
+**Admin — límites de listados:** `/admin/verses` 1000, `/admin/reflections`
+500, `/admin/daily-verses` las 1000 fechas más recientes (en orden
+ascendente). Si el contenido crece más allá, subirlos o paginar.
 - `scripts/generate_app_icon.py` — genera assets de ícono/splash con PIL.
 - `scripts/generate_share_backgrounds.py` — genera los 3 fondos fijos de
   "compartir como imagen".
