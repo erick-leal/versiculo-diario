@@ -44,6 +44,7 @@ pnpm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+Captura de pantalla *.png
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
