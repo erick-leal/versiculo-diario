@@ -1,0 +1,249 @@
+# Lote 3: 245 referencias nuevas (sumadas a las 120 de los lotes 1 y 2 = 365).
+# Formato: <Libro (nombre moderno del dump)> <capitulo>:<verso>[-<verso_fin>]
+# El texto NO se escribe a mano: lo extrae scripts/extract_rva1909.py del
+# dump oficial de la RVA1909.
+Génesis 1:27
+Génesis 1:31
+Génesis 12:2
+Génesis 16:13
+Génesis 18:14
+Génesis 32:26
+Génesis 50:20
+Éxodo 3:14
+Éxodo 4:12
+Éxodo 15:2
+Éxodo 34:6
+Levítico 19:18
+Números 6:24-26
+Números 23:19
+Deuteronomio 6:5
+Deuteronomio 7:9
+Deuteronomio 8:3
+Deuteronomio 33:27
+Josué 1:8
+Josué 21:45
+Jueces 6:12
+Rut 1:16
+1 Samuel 2:2
+1 Samuel 17:47
+1 Samuel 30:6
+1 Reyes 8:56
+2 Reyes 6:16
+1 Crónicas 16:34
+Salmos 62:8
+2 Crónicas 20:15
+Ester 4:14
+Job 1:21
+Job 23:10
+Salmos 3:3
+Salmos 4:8
+Salmos 5:3
+Salmos 8:3-4
+Salmos 9:9-10
+Salmos 16:8
+Salmos 18:2
+Salmos 18:28
+Salmos 19:14
+Salmos 20:7
+Salmos 23:4
+Salmos 27:14
+Salmos 28:7
+Salmos 32:7
+Salmos 31:15
+Salmos 31:24
+Salmos 34:4
+Salmos 36:7
+Salmos 37:5
+Salmos 37:7
+Salmos 37:23-24
+Salmos 40:1-2
+Salmos 42:11
+Salmos 46:10
+Salmos 51:10
+Salmos 56:3
+Salmos 57:1
+Salmos 61:2
+Salmos 63:1
+Salmos 68:19
+Salmos 71:5
+Salmos 73:26
+Salmos 86:5
+Salmos 91:4
+Salmos 94:19
+Salmos 100:4-5
+Salmos 103:2-4
+Salmos 103:12
+Salmos 116:1-2
+Salmos 118:6
+Salmos 119:71
+Salmos 126:5
+Salmos 127:1
+Salmos 130:5
+Salmos 139:23-24
+Salmos 143:8
+Salmos 145:18
+Proverbios 1:7
+Proverbios 3:27
+Proverbios 11:25
+Proverbios 12:25
+Proverbios 15:1
+Proverbios 16:24
+Proverbios 17:17
+Proverbios 19:21
+Proverbios 27:17
+Proverbios 28:13
+Proverbios 29:25
+Proverbios 31:30
+Eclesiastés 3:11
+Eclesiastés 4:9-10
+Eclesiastés 7:8
+Eclesiastés 9:10
+Cantar de los Cantares 8:7
+Isaías 6:8
+Isaías 9:6
+Isaías 12:2
+Isaías 25:8
+Isaías 30:18
+Isaías 30:21
+Isaías 40:8
+Isaías 40:29
+Isaías 42:3
+Isaías 43:1
+Isaías 43:18-19
+Isaías 46:4
+Isaías 49:15-16
+Isaías 54:10
+Isaías 58:11
+Isaías 64:8
+Jeremías 1:5
+Jeremías 17:14
+Jeremías 29:13
+Jeremías 31:3
+Jeremías 33:3
+Lamentaciones 3:25-26
+Oseas 6:3
+Joel 2:25
+Amós 5:24
+Jonás 2:7
+Miqueas 7:7
+Miqueas 7:18
+Nahúm 1:7
+Habacuc 3:17-18
+Zacarías 4:6
+Malaquías 3:6
+Mateo 4:4
+Mateo 5:3
+Mateo 5:5
+Mateo 5:6
+Mateo 5:8
+Mateo 5:9
+Mateo 5:44
+Mateo 6:6
+Mateo 6:26
+Mateo 6:34
+Mateo 7:24
+Mateo 10:29-31
+Mateo 11:29-30
+Mateo 14:27
+Mateo 17:20
+Mateo 25:40
+Marcos 1:35
+Marcos 4:39
+Marcos 5:36
+Marcos 6:31
+Marcos 9:24
+Lucas 1:45
+Lucas 2:10-11
+Lucas 5:16
+Lucas 6:36
+Lucas 10:41-42
+Lucas 12:32
+Lucas 15:7
+Lucas 19:10
+Lucas 22:42
+Lucas 23:34
+Juan 1:5
+Juan 3:30
+Juan 4:14
+Juan 6:35
+Juan 6:37
+Juan 8:32
+Juan 10:11
+Juan 10:27-28
+Juan 11:25
+Juan 11:35
+Juan 13:34-35
+Juan 14:1
+Juan 14:6
+Juan 15:5
+Juan 15:13
+Hechos 3:19
+Hechos 16:31
+Hechos 17:28
+Hechos 20:35
+Romanos 3:23-24
+Romanos 5:1
+Romanos 5:3-5
+Romanos 8:18
+Romanos 8:26
+Romanos 8:31
+Romanos 8:37
+Romanos 12:12
+Romanos 12:21
+Romanos 15:13
+1 Corintios 1:27
+1 Corintios 2:9
+1 Corintios 10:31
+1 Corintios 13:13
+2 Corintios 1:3-4
+2 Corintios 3:17
+2 Corintios 4:7
+2 Corintios 4:8-9
+2 Corintios 5:7
+Gálatas 5:1
+Gálatas 6:2
+Efesios 2:4-5
+Efesios 3:17-19
+Efesios 4:2-3
+Efesios 4:29
+Efesios 6:10
+Filipenses 1:21
+Filipenses 2:3-4
+Filipenses 3:13-14
+Filipenses 4:8
+Filipenses 4:11-12
+Colosenses 2:6-7
+Colosenses 3:12-13
+Colosenses 3:15
+1 Tesalonicenses 5:11
+2 Tesalonicenses 3:16
+1 Timoteo 4:12
+1 Timoteo 6:6
+2 Timoteo 2:13
+2 Timoteo 4:7
+Tito 3:5
+Hebreos 4:12
+Hebreos 6:19
+Hebreos 10:23
+Hebreos 12:1-2
+Hebreos 12:11
+Hebreos 13:5
+Hebreos 13:8
+Santiago 1:2-3
+Santiago 1:12
+Santiago 1:17
+Santiago 4:8
+Santiago 5:16
+1 Pedro 3:15
+1 Pedro 4:8
+1 Pedro 5:6
+1 Pedro 5:10
+2 Pedro 3:9
+1 Juan 3:1
+1 Juan 3:18
+1 Juan 4:7
+1 Juan 4:18
+1 Juan 5:14
+Judas 1:24-25
+Apocalipsis 1:8
+Apocalipsis 21:5
