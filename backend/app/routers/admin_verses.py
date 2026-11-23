@@ -13,7 +13,10 @@ router = APIRouter(prefix="/admin/verses", dependencies=[Depends(require_admin)]
 
 @router.get("", response_model=list[AdminVerseOut])
 def list_verses(db: Session = Depends(get_db)) -> list[Verse]:
-    return db.query(Verse).order_by(Verse.created_at.desc()).limit(200).all()
+    # Limite subido de 200 a 1000: con el lote 3 hay 365 versiculos y el
+    # limite viejo escondia los 165 mas antiguos (tambien en el selector de
+    # versiculo al crear una reflexion).
+    return db.query(Verse).order_by(Verse.created_at.desc()).limit(1000).all()
 
 
 @router.post("", response_model=AdminVerseOut, status_code=201)

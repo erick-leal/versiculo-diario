@@ -27,7 +27,11 @@ def _validate_pair(db: Session, verse_id: int, reflection_id: int) -> None:
 
 @router.get("", response_model=list[AdminDailyVerseOut])
 def list_daily_verses(db: Session = Depends(get_db)) -> list[DailyVerse]:
-    return db.query(DailyVerse).order_by(DailyVerse.date.asc()).limit(200).all()
+    # Las 1000 fechas MAS RECIENTES, devueltas en orden ascendente (como las
+    # muestra Schedule.tsx). Antes era asc + limit(200): al pasar de 200 dias
+    # programados (el cron agrega uno por dia) se escondian las fechas nuevas.
+    recent = db.query(DailyVerse).order_by(DailyVerse.date.desc()).limit(1000).all()
+    return list(reversed(recent))
 
 
 @router.post("", response_model=AdminDailyVerseOut, status_code=201)
