@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_or_create_user
-from app.models import DailyVerse, PersonalReflection, User
+from app.models import PersonalReflection, User
+from app.queries import get_visible_daily_verse_or_404, visible_daily_verse_ids
 from app.schemas import PersonalReflectionOut, PersonalReflectionUpsert
 
 router = APIRouter()
@@ -15,7 +16,10 @@ def list_personal_reflections(
 ) -> list[PersonalReflection]:
     return (
         db.query(PersonalReflection)
-        .filter(PersonalReflection.user_id == user.id)
+        .filter(
+            PersonalReflection.user_id == user.id,
+            PersonalReflection.daily_verse_id.in_(visible_daily_verse_ids(db)),
+        )
         .order_by(PersonalReflection.updated_at.desc())
         .all()
     )
@@ -27,9 +31,8 @@ def upsert_personal_reflection(
     user: User = Depends(get_or_create_user),
     db: Session = Depends(get_db),
 ) -> PersonalReflection:
-    daily_verse = db.query(DailyVerse).filter(DailyVerse.id == payload.daily_verse_id).first()
-    if daily_verse is None:
-        raise HTTPException(status_code=404, detail="daily_verse_id no existe")
+    # Antes aceptaba cualquier id, incluso de un dia futuro o sin revisar.
+    get_visible_daily_verse_or_404(db, payload.daily_verse_id, "daily_verse_id no existe")
 
     entry = (
         db.query(PersonalReflection)

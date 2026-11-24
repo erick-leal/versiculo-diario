@@ -6,6 +6,7 @@ from app.constants import MOOD_TAGS
 from app.core.dates import today
 from app.database import get_db
 from app.models import DailyVerse, Reflection
+from app.queries import get_visible_daily_verse_or_404, visible_daily_verses
 from app.schemas import DailyVerseOut
 
 router = APIRouter()
@@ -26,15 +27,9 @@ def get_daily_verse(db: Session = Depends(get_db)) -> DailyVerse:
 
 @router.get("/daily-verse/{daily_verse_id}", response_model=DailyVerseOut)
 def get_daily_verse_by_id(daily_verse_id: int, db: Session = Depends(get_db)) -> DailyVerse:
-    daily_verse = (
-        db.query(DailyVerse)
-        .join(Reflection, DailyVerse.reflection_id == Reflection.id)
-        .filter(DailyVerse.id == daily_verse_id, Reflection.status == "published")
-        .first()
-    )
-    if daily_verse is None:
-        raise HTTPException(status_code=404, detail="Versículo no encontrado")
-    return daily_verse
+    # visible = publicado Y fecha <= hoy: el cron publica con dias de
+    # anticipacion y antes se podia leer el contenido de manana por id.
+    return get_visible_daily_verse_or_404(db, daily_verse_id, "Versículo no encontrado")
 
 
 @router.get("/reflections/by-mood", response_model=DailyVerseOut)
@@ -44,11 +39,8 @@ def get_reflection_by_mood(
     if mood not in MOOD_TAGS:
         raise HTTPException(status_code=400, detail="Estado de ánimo inválido")
 
-    query = (
-        db.query(DailyVerse)
-        .join(Reflection, DailyVerse.reflection_id == Reflection.id)
-        .filter(Reflection.status == "published", Reflection.mood_tags.any(mood))
-    )
+    # Antes el azar podia elegir un dia futuro ya programado por el cron.
+    query = visible_daily_verses(db).filter(Reflection.mood_tags.any(mood))
 
     daily_verse = None
     if exclude_id is not None:

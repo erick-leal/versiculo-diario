@@ -202,6 +202,14 @@ pasándolas a `published`. **Flujo editorial actual:** sembrar contenido en
   mientras `/daily-verse` daba 404 doce días. Diagnóstico: logs del cron en
   Railway ("No hay reflexiones en status='reviewed'…").
 - Si `/daily-verse` da 404, mirar primero los logs del cron, no la app.
+- **Como el cron publica con días de anticipación, toda consulta PÚBLICA
+  de días debe partir de `visible_daily_verses()`**
+  (`backend/app/queries.py`): reflexión `published` **y**
+  `fecha <= today()`. Hasta el 2026-11-24, `/daily-verse/{id}`,
+  `/reflections/by-mood`, `POST /favorites` y `PUT /personal-reflections`
+  solo miraban `status` (o ni eso): adivinando el id siguiente se leía el
+  contenido de mañana. Los endpoints `admin_*` no usan esa consulta: el
+  admin sí debe ver el futuro.
 
 ## Estado del roadmap (13 fases)
 
